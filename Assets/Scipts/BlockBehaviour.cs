@@ -2,39 +2,34 @@ using UniRx;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
-public class BlockBehaviour : MonoBehaviour
+public class BlockBehaviour : ConstructableBehaviour<Block>
 {
     private SpriteRenderer spriteRenderer = null;
 
-    private Block block = null;
-
     private DisposablesContainer disposablesContainer = new DisposablesContainer();
 
-    private bool isConstructed = false;
-
-    public void Construct(Block block)
+    public override void Construct(Block block)
     {
-        this.block = block;
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        isConstructed = true;
+        base.Construct(block);
     }
 
     private void OnEnable()
     {
         if (isConstructed)
         {
-            disposablesContainer.Add(block.position.Subscribe(position =>
+            disposablesContainer.Add(model.position.Subscribe(position =>
             {
                 transform.position = new Vector3(position.x, position.y, 0);
             }));
 
-            disposablesContainer.Add(block.color.Subscribe(color =>
+            disposablesContainer.Add(model.color.Subscribe(color =>
             {
                 spriteRenderer.color = color;
             }));
 
-            disposablesContainer.Add(block.isAlive.Subscribe(isAlive =>
+            disposablesContainer.Add(model.isAlive.Subscribe(isAlive =>
             {
                 if (!isAlive)
                 {

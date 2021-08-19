@@ -1,26 +1,15 @@
 using UniRx;
 using UnityEngine;
 
-public class TetrominoBehaviour : MonoBehaviour, ITetromino
+public class TetrominoBehaviour : ConstructableBehaviour<ITetromino>, ITetromino
 {
-    private ITetromino tetromino = null;
-
     public ReactiveProperty<Vector2Int> currentAxis => throw new System.NotImplementedException();
 
-    private bool isConstructed = false;
-
-    public void Construct(ITetromino tetromino)
-    {
-        this.tetromino = tetromino;
-
-        isConstructed = true;
-    }
-
-    public void Move()
+    public void Move() // TODO : Возможно совсем уберу т.к. буду вызывать их непосредственно у модели, а эту шляпу онли для инстанциализации в игре
     {
         if (isConstructed)
         {
-            tetromino.Move();
+            model.Move();
         }
     }
 
@@ -28,7 +17,7 @@ public class TetrominoBehaviour : MonoBehaviour, ITetromino
     {
         if (isConstructed)
         {
-            tetromino.Rotate();
+            model.Rotate();
         }
     }
 
@@ -36,7 +25,7 @@ public class TetrominoBehaviour : MonoBehaviour, ITetromino
     {
         if (isConstructed)
         {
-            tetromino.TickMove();
+            model.TickMove();
         }
     }
 }
