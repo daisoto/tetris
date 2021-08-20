@@ -9,6 +9,8 @@ public class TetrominoDataEditor : Editor
 
     private bool[,] rawShape = default;
 
+    private readonly string targetShapeName = "_shape";
+
     private void OnEnable()
     {
         Load();
@@ -20,7 +22,8 @@ public class TetrominoDataEditor : Editor
         
         DrawSize();
         DrawTetrominoData();
-        DrawSaveButton();
+        DrawApplyButton();
+        DrawCancelButton();
     }
 
     private void DrawSize()
@@ -62,29 +65,41 @@ public class TetrominoDataEditor : Editor
         }
     }
 
-    private void DrawSaveButton()
+    private void DrawApplyButton()
     {
-        if (GUILayout.Button("Save"))
+        if (GUILayout.Button("Apply"))
         {
-            Save();
+            Apply();
         };
     }
 
-    private void Save()
+    private void DrawCancelButton()
     {
-        ((TetrominoData)target).shape = (bool[,])rawShape.Clone();
+        if (GUILayout.Button("Cancel"))
+        {
+            Load();
+        };
+    }
+
+    private void Apply()
+    {
+        SerializedProperty targetShapeProperty = serializedObject.FindProperty(targetShapeName);
+
+        //TODO
+
+        serializedObject.ApplyModifiedProperties();
     }
 
     private void Load()
     {
-        bool[,] originalShape = ((TetrominoData)target).shape;
+        SerializableRectangularArray<bool> targetShape = ((TetrominoData)target).shape;
 
-        if (originalShape == null)
+        if (targetShape == null)
         {
             return;
         }
 
-        size = new Vector2Int(originalShape.GetLength(0), originalShape.GetLength(1));
+        size = targetShape.size;
 
         rawShape = new bool[size.x, size.y];
 
@@ -92,7 +107,7 @@ public class TetrominoDataEditor : Editor
         {
             for (int j = 0; j < size.y; j++)
             {
-                rawShape[i, j] = originalShape[i, j];
+                rawShape[i, j] = targetShape[i, j];
             }
         }
     }

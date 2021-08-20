@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f11720a141a5f8d4da23e49a50719876, type: 3}
   m_Name: New TetramineData
   m_EditorClassIdentifier: 
+  _blockData: {fileID: 0}
