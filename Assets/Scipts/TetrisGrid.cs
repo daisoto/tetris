@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
@@ -11,7 +10,7 @@ public class TetrisGrid
     public ReactiveCommand<Block> onInsert = new ReactiveCommand<Block>();
     public ReactiveCommand onClear = new ReactiveCommand();
 
-    private bool[,] cells = null;
+    private bool[,] grid = null;
 
     private IGridChecker gridChecker = null;
 
@@ -24,7 +23,7 @@ public class TetrisGrid
         this.size = size;
         this.gridChecker = gridChecker;
 
-        cells = new bool[size.x, size.y];
+        grid = new bool[size.x, size.y];
 
         disposablesContainer.Add(onInsert.Subscribe(block =>
         {
@@ -60,7 +59,7 @@ public class TetrisGrid
 
         cellBlocks.Add(position, block);
 
-        cells[position.x, position.y] = true;
+        grid[position.x, position.y] = true;
 
         onInsert.Execute(block);
     }
@@ -69,21 +68,21 @@ public class TetrisGrid
     {
         cellBlocks[point].isAlive.Value = false;
         cellBlocks.Remove(point);
-        cells[point.x, point.y] = false;
+        grid[point.x, point.y] = false;
     }
 
     public bool IsRowColumnFilled(Vector2Int position, out Vector2Int[] positionsToClear)
     {
-        return gridChecker.IsRowColumnFilled(position, cells, out positionsToClear);
+        return gridChecker.IsRowColumnFilled(position, grid, out positionsToClear);
     }
 
     public bool IsNextSpaceFree(Vector2Int position)
     {
-        return gridChecker.IsNextSpaceFree(position, cells);
+        return gridChecker.IsNextSpaceFree(position, grid);
     }
 
     public bool IsSpaceFree(Vector2Int position)
     {
-        return !cells[position.x, position.y];
+        return !grid[position.x, position.y];
     }
 }

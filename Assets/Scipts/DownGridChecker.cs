@@ -1,19 +1,21 @@
 using UnityEngine;
 
-public class DownGridChecker : IGridChecker
+public class DownGridChecker : GridChecker
 {
-    public bool IsNextSpaceFree(Vector2Int position, bool[,] cells)
+    public DownGridChecker(bool[,] grid) : base(grid) { }
+
+    public override bool IsNextSpaceFree(Vector2Int position)
     {
-        return cells[position.x, position.y + 1];
+        return IsDownSpaceFree(position);
     }
 
-    public bool IsRowColumnFilled(Vector2Int position, bool[,] cells, out Vector2Int[] positionsToClear)
+    public override bool IsRowColumnFilled(Vector2Int position, out Vector2Int[] positionsToClear)
     {
         positionsToClear = new Vector2Int[position.x];
 
-        for (int i = 0; i < cells.GetLength(0); i++)
+        for (int i = 0; i < grid.GetLength(0); i++)
         {
-            if (cells[position.x, i] == false)
+            if (grid[position.x, i] == false)
             {
                 positionsToClear = null;
 
