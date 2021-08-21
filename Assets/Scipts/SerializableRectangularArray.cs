@@ -6,9 +6,9 @@ public class SerializableRectangularArray<T>
 {
     public Vector2Int size { get => _size; }
 
-    private T[] _values;
+    [SerializeField, HideInInspector] private T[] _values;
 
-    private Vector2Int _size;
+    [SerializeField, HideInInspector]  private Vector2Int _size;
 
     public static implicit operator SerializableRectangularArray<T>(T[][] rawArray)
     {
@@ -85,6 +85,10 @@ public class SerializableRectangularArray<T>
             {
                 throw new IndexOutOfRangeException();
             }
+            else if (i * j > _values.Length)
+            {
+                throw new NullReferenceException();
+            }
             else
             {
                 return _values[_size.y * i + j];
@@ -95,6 +99,10 @@ public class SerializableRectangularArray<T>
             if (i > _size.x || j > _size.y)
             {
                 throw new IndexOutOfRangeException();
+            }
+            else if (i * j > _values.Length)
+            {
+                throw new NullReferenceException();
             }
             else
             {

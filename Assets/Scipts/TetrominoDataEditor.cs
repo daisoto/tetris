@@ -5,11 +5,11 @@ using UnityEngine;
 [CustomEditor(typeof(TetrominoData))]
 public class TetrominoDataEditor : Editor
 {
-    private Vector2Int size = default;
-
     private bool[,] rawShape = default;
 
-    private readonly string targetShapeName = "_shape";
+    private readonly string targetArrayName = "editorArray";
+
+    private readonly Vector2Int size = new Vector2Int(4, 4);
 
     private void OnEnable()
     {
@@ -19,16 +19,10 @@ public class TetrominoDataEditor : Editor
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-        
-        DrawSize();
+
         DrawTetrominoData();
         DrawApplyButton();
         DrawCancelButton();
-    }
-
-    private void DrawSize()
-    {
-        size = EditorGUILayout.Vector2IntField("Size", size);
     }
 
     private void DrawTetrominoData()
@@ -36,13 +30,6 @@ public class TetrominoDataEditor : Editor
         if (rawShape == null)
         {
             rawShape = new bool[size.x, size.y];
-        }
-
-        if (size.x < 1 || size.y < 1)
-        {
-            Array.Clear(rawShape, 0, rawShape.Length);
-
-            return;
         }
 
         if (rawShape.GetLength(0) != size.x || rawShape.GetLength(1) != size.y)
@@ -63,6 +50,20 @@ public class TetrominoDataEditor : Editor
 
             EditorGUILayout.EndHorizontal();
         }
+
+        //SerializedProperty targetArrayProperty = serializedObject.FindProperty(targetArrayName);
+
+        //for (int i = 0; i < size.x; i++)
+        //{
+        //    EditorGUILayout.BeginHorizontal(GUILayout.Width(40));
+
+        //    for (int j = 0; j < size.y; j++)
+        //    {
+        //        EditorGUILayout.PropertyField(targetArrayProperty.GetArrayElementAtIndex(size.y * i + j), GUIContent.none);
+        //    }
+
+        //    EditorGUILayout.EndHorizontal();
+        //}
     }
 
     private void DrawApplyButton()
@@ -83,23 +84,28 @@ public class TetrominoDataEditor : Editor
 
     private void Apply()
     {
-        SerializedProperty targetShapeProperty = serializedObject.FindProperty(targetShapeName);
+        SerializedProperty targetArray = serializedObject.FindProperty(targetArrayName);
 
-        //TODO
+        for (int i = 0; i < size.x; i++)
+        {
+            for (int j = 0; j < size.y; j++)
+            {
+                targetArray.GetArrayElementAtIndex(size.y * i + j).boolValue = rawShape[i, j];
+            }
+        }
 
         serializedObject.ApplyModifiedProperties();
     }
 
     private void Load()
     {
-        SerializableRectangularArray<bool> targetShape = ((TetrominoData)target).shape;
+        //SerializableRectangularArray<bool> targetShape = ((TetrominoData)target).shape;
+        SerializedProperty targetArray = serializedObject.FindProperty(targetArrayName);
 
-        if (targetShape == null)
+        if (targetArray.arraySize == 0)
         {
             return;
         }
-
-        size = targetShape.size;
 
         rawShape = new bool[size.x, size.y];
 
@@ -107,7 +113,7 @@ public class TetrominoDataEditor : Editor
         {
             for (int j = 0; j < size.y; j++)
             {
-                rawShape[i, j] = targetShape[i, j];
+                rawShape[i, j] = targetArray.GetArrayElementAtIndex(size.y * i + j).boolValue;
             }
         }
     }
