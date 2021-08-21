@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f11720a141a5f8d4da23e49a50719876, type: 3}
   m_Name: New TetramineData
   m_EditorClassIdentifier: 
-  editorArray: 00000001000000010000000100000001
   _blockData: {fileID: 0}
+  _shape:
+    _values: 000001000001000001
+    _size: {x: 3, y: 3}
