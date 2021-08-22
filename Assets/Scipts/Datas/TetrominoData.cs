@@ -5,6 +5,10 @@ public class TetrominoData : ScriptableObject
 {
     public SerializableRectangularArray<bool> shape { get => _shape; }
 
+    public int capacity { get => _shape.capacity; }
+
+    public Vector2Int size { get => _shape.size; }
+
     [SerializeField, HideInInspector]  private SerializableRectangularArray<bool> _shape = null;
 
     public int GetBlocksNum()

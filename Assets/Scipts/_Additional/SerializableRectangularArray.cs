@@ -6,6 +6,8 @@ public class SerializableRectangularArray<T>
 {
     public Vector2Int size { get => _size; }
 
+    public int capacity { get => _values.Length; }
+
     [SerializeField, HideInInspector] private T[] _values;
 
     [SerializeField, HideInInspector]  private Vector2Int _size;

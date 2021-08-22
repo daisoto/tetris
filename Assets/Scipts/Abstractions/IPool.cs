@@ -3,4 +3,6 @@
     T Get();
 
     void Return(T obj);
+
+    void Clear();
 }

@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 public class BlocksPool : IPool<Block>
 {
@@ -27,5 +25,10 @@ public class BlocksPool : IPool<Block>
     {
         block.isAlive.Value = false;
         blocks.Push(block);
+    }
+
+    public void Clear()
+    {
+        blocks.Clear();
     }
 }

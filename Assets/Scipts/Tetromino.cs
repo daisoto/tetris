@@ -1,42 +1,27 @@
 using UnityEngine;
 using UniRx;
 
-public class Tetromino : ITetromino
+public class Tetromino
 {
-    public Block[] blocks = null;
+    public Block[] blocks { get; private set; }
 
     public ReactiveProperty<Vector2Int> currentAxis = new ReactiveProperty<Vector2Int>();
 
     private IRotator rotator = null;
 
-    private IMover tickMover = null;
-
     private IMover mover = null;
 
-    public Tetromino(Block[] blocks, IRotator rotator, IMover tickMover)
+    public Tetromino(Block[] blocks)
     {
         this.blocks = blocks;
-        this.rotator = rotator;
-        this.tickMover = tickMover;
     }
 
     public void Rotate()
     {
         foreach (Block block in blocks)
-        {
+        { 
             block.position.Value = rotator.GetRotatedPosition(block.position.Value, currentAxis.Value);
         }
-    }
-
-    public void TickMove() // Вынести в отдельный класс ???
-    {
-        foreach (Block block in blocks)
-        {
-            if (!block.isStuck.Value)
-            {
-                block.position.Value = tickMover.GetMovedPosition(block.position.Value);
-            }
-        }        
     }
 
     public void SetMover(IMover mover)
@@ -47,6 +32,16 @@ public class Tetromino : ITetromino
         }
 
         this.mover = mover;
+    }
+
+    public void SetRotator(IRotator rotator)
+    {
+        if (this.rotator == rotator)
+        {
+            return;
+        }
+
+        this.rotator = rotator;
     }
 
     public void Move()
