@@ -73,12 +73,12 @@ public class TetrisGrid
 
     public bool IsRowColumnFilled(Vector2Int position, out Vector2Int[] positionsToClear)
     {
-        return gridChecker.IsRowColumnFilled(position, grid, out positionsToClear);
+        return gridChecker.IsRowColumnFilled(position, out positionsToClear);
     }
 
     public bool IsNextSpaceFree(Vector2Int position)
     {
-        return gridChecker.IsNextSpaceFree(position, grid);
+        return gridChecker.IsNextSpaceFree(position);
     }
 
     public bool IsSpaceFree(Vector2Int position)
