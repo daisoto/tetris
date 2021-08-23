@@ -4,8 +4,8 @@ using UniRx;
 
 public class TetrisGrid
 {
-    public ReactiveCommand<Block[]> onInsert = new ReactiveCommand<Block[]>();
-    public ReactiveCommand onClear = new ReactiveCommand();
+    public ReactiveCommand<Block[]> OnInsert = new ReactiveCommand<Block[]>();
+    public ReactiveCommand OnClear = new ReactiveCommand();
 
     private bool[,] grid = null;
 
@@ -23,20 +23,20 @@ public class TetrisGrid
 
     private List<Block> movingBlocks = new List<Block>();
 
-    public TetrisGrid(bool[,] grid, IGridChecker gridChecker, IBlocksMover blockMover, IBlocksRotator blocksRotator, ScoreManager scoreManager)
+    public TetrisGrid(bool[,] grid, IGridChecker gridChecker, IBlocksMover blocksMover, IBlocksRotator blocksRotator, ScoreManager scoreManager)
     {
         this.grid = grid;
         this.gridChecker = gridChecker;
         this.scoreManager = scoreManager;
-        this.blocksMover = blockMover;
+        this.blocksMover = blocksMover;
         this.blocksRotator = blocksRotator;
 
-        disposablesContainer.Add(onInsert.Subscribe(blocks =>
+        disposablesContainer.Add(OnInsert.Subscribe(blocks =>
         {
             ProcessInsertedBlocks(blocks);
         }));
 
-        disposablesContainer.Add(onClear.Subscribe(_ => 
+        disposablesContainer.Add(OnClear.Subscribe(_ => 
         {
             ProcessAfterCleaning();
         }));
@@ -115,7 +115,7 @@ public class TetrisGrid
             grid[position.x, position.y] = true;
         }
 
-        onInsert.Execute(blocks);
+        OnInsert.Execute(blocks);
     }    
 
     private void ProcessInsertedBlocks(IEnumerable<Block> blocks)
@@ -147,6 +147,8 @@ public class TetrisGrid
             positionStuckBlocks.Remove(positionToClear);
             grid[positionToClear.x, positionToClear.y] = false;
         }
+
+        OnClear.Execute();
     }
 
     private void ProcessAfterCleaning()

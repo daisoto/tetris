@@ -107,6 +107,11 @@ public class TetrominoDataEditor : Editor
     {
         SerializableRectangularArray<bool> targetShape = ((TetrominoData)target).shape;
 
+        if (targetShape == null)
+        {
+            return;
+        }
+
         size = targetShape.size;
 
         rawShape = new bool[size.x, size.y];

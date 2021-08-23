@@ -4,11 +4,11 @@ public class Tetromino: ITickable
 {
     public ReactiveCommand OnStuck = new ReactiveCommand();
 
-    private Block[] blocks = null;
+    public Block[] blocks { get; private set; }
 
     private TetrisGrid tetrisGrid = null;
 
-    public Tetromino(Block[] blocks, TetrisGrid tetrisGrid)
+    public Tetromino(TetrisGrid tetrisGrid, Block[] blocks)
     {
         this.tetrisGrid = tetrisGrid;
         this.blocks = blocks;

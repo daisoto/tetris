@@ -9,8 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ff6409fdd7f47640be41769a22055dd, type: 3}
-  m_Name: New BlocksData
+  m_Script: {fileID: 11500000, guid: 374452f2440eca649a4f400c190a0d48, type: 3}
+  m_Name: Tetromino data o
   m_EditorClassIdentifier: 
-  _sprites: []
-  _colors: []
+  _shape:
+    _values: 010101010101
+    _size: {x: 2, y: 2}

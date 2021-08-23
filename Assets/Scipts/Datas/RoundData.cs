@@ -1,10 +1,17 @@
 ﻿using UnityEngine;
 
+[CreateAssetMenu(fileName = "New RoundData", menuName = "Round data")]
 public class RoundData: ScriptableObject
 {
-    [SerializeField] private BlockData blockData;
+    public BlockData blockData { get => _blockData; }
 
-    [SerializeField, Range(5, 100)] private int tetrominosInRound;
+    public int tetrominosInRound { get => _tetrominosInRound; }
 
-    [SerializeField, Range(0.1f, 1f)] private float fallPeriod;
+    public float fallPeriod { get => _fallPeriod; }
+
+    [SerializeField] private BlockData _blockData;
+
+    [SerializeField, Range(5, 100)] private int _tetrominosInRound = 5;
+
+    [SerializeField, Range(0.1f, 1f)] private float _fallPeriod = 0.1f;
 }

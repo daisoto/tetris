@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f11720a141a5f8d4da23e49a50719876, type: 3}
-  m_Name: New TetramineData
+  m_Script: {fileID: 11500000, guid: 374452f2440eca649a4f400c190a0d48, type: 3}
+  m_Name: Tetromino data s
   m_EditorClassIdentifier: 
-  _blockData: {fileID: 0}
   _shape:
-    _values: 000001000001000001
-    _size: {x: 3, y: 3}
+    _values: 000101010100
+    _size: {x: 2, y: 3}

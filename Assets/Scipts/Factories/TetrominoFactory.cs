@@ -1,60 +1,43 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class TetrominoFactory : IFactory<Tetromino>
 {
-    private TetrominoData tetrominoData = null;
-
-    private Block[] blocks = null;
+    private TetrominoData[] tetrominoDatas = null;
 
     private Vector2Int initialPosition = default;
 
     private TetrisGrid tetrisGrid = null;
 
-    private Vector2Int currentCenter { get => initialPosition - new Vector2Int(tetrominoData.size.y / 2, tetrominoData.size.y); }
+    private IPool<Block> blocksPool = null;
 
-    public TetrominoFactory(Vector2Int initialPosition, TetrisGrid tetrisGrid)
+    public TetrominoFactory(Vector2Int initialPosition, TetrisGrid tetrisGrid, IPool<Block> blocksPool, TetrominoData[] tetrominoDatas)
     {
+        this.tetrominoDatas = tetrominoDatas;
+        this.blocksPool = blocksPool;
         this.tetrisGrid = tetrisGrid;
         this.initialPosition = initialPosition;
     }
 
     public Tetromino Create()
     {
-        if (blocks == null || tetrominoData == null)
+        TetrominoData tetrominoData = tetrominoDatas[TetrisRandom.random.Next(tetrominoDatas.Length)];
+
+        List<Block> blocks = new List<Block>();
+
+        for (int i = 0; i < tetrominoData.capacity; i++)
         {
-            return null;
+            blocks.Add(blocksPool.Get());
         }
-        else
-        {
-            return new Tetromino(tetrisGrid, blocks);
-        }
+
+        SetBlocksPosition(tetrominoData, blocks.ToArray());
+
+        return new Tetromino(tetrisGrid, blocks.ToArray());
     }
 
-    public void SetTetrominoData(TetrominoData tetrominoData)
+    private void SetBlocksPosition(TetrominoData tetrominoData, Block[] blocks)
     {
-        this.tetrominoData = tetrominoData;
-    }
-
-    public void SetBlocks(Block[] blocks)
-    {
-        this.blocks = blocks;
-
-        if (tetrominoData == null)
-        {
-            return;
-        }
-        else
-        {
-            SetBlocksPosition();
-        }
-    }
-
-    private void SetBlocksPosition()
-    {
-        if (tetrominoData.capacity != blocks.Length)
-        {
-            return;
-        }
+        Vector2Int currentCenter = initialPosition - new Vector2Int(tetrominoData.size.x / 2, tetrominoData.size.y);
 
         for (int i = 0; i < tetrominoData.size.x; i++)
         {

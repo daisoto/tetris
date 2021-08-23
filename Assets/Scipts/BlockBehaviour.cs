@@ -6,8 +6,6 @@ public class BlockBehaviour : ConstructableBehaviour<Block>
 {
     private SpriteRenderer spriteRenderer = null;
 
-    private DisposablesContainer disposablesContainer = new DisposablesContainer();
-
     public override void Construct(Block block)
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -15,7 +13,7 @@ public class BlockBehaviour : ConstructableBehaviour<Block>
         base.Construct(block);
     }
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
         if (isConstructed)
         {
@@ -37,10 +35,5 @@ public class BlockBehaviour : ConstructableBehaviour<Block>
                 }
             }));
         }
-    }
-
-    private void OnDisable()
-    {
-        disposablesContainer.Clear();
-    }
+    }    
 }

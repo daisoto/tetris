@@ -9,13 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d1aa7c684ca73b42807e2e84425bcbc, type: 3}
-  m_Name: New TetrisSettingsData
+  m_Script: {fileID: 11500000, guid: 628dbc2be28217b49826dee1d83e5b80, type: 3}
+  m_Name: Round 2
   m_EditorClassIdentifier: 
-  _tetrominoDatas:
-  - {fileID: 11400000, guid: a93b1b1fa801cdc47805e2335ae9a5d3, type: 2}
-  minTetrominosInRound: 1
-  minFallPeriod: 0.1
+  _blockData: {fileID: 11400000, guid: 8277c265b1b6fe141aac759295548e48, type: 2}
   _tetrominosInRound: 10
-  _initialFallPeriod: 0.5
-  _fallPeriodDecrement: 0.02
+  _fallPeriod: 0.2

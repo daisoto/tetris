@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using UniRx;
+using System.Collections.Generic;
 
 public class BlocksPool : IPool<Block>
 {
@@ -6,11 +7,29 @@ public class BlocksPool : IPool<Block>
 
     private Stack<Block> blocks = new Stack<Block>();
 
+    private DisposablesContainer disposablesContainer = new DisposablesContainer();
+
+    public BlocksPool(IFactory<Block> factory)
+    {
+        this.factory = factory;
+    }
+
     public Block Get()
     {
         if (blocks.Count < 1)
         {
-            return factory.Create();
+            Block block = factory.Create();
+            block.isAlive.Value = true;
+
+            disposablesContainer.Add(block.isAlive.Subscribe(isAlive =>
+            {
+                if (!isAlive)
+                {
+                    Return(block);
+                }
+            }));
+
+            return block;
         }
         else
         {
@@ -30,5 +49,6 @@ public class BlocksPool : IPool<Block>
     public void Clear()
     {
         blocks.Clear();
+        disposablesContainer.Clear();
     }
 }
