@@ -1,54 +1,52 @@
-using UnityEngine;
 using UniRx;
 
-public class Tetromino
+public class Tetromino: ITickable
 {
-    public Block[] blocks { get; private set; }
+    public ReactiveCommand OnStuck = new ReactiveCommand();
 
-    public ReactiveProperty<Vector2Int> currentAxis = new ReactiveProperty<Vector2Int>();
+    private Block[] blocks = null;
 
-    private IRotator rotator = null;
+    private TetrisGrid tetrisGrid = null;
 
-    private IMover mover = null;
-
-    public Tetromino(Block[] blocks)
+    public Tetromino(Block[] blocks, TetrisGrid tetrisGrid)
     {
+        this.tetrisGrid = tetrisGrid;
         this.blocks = blocks;
+
+        foreach (Block block in blocks)
+        {
+            block.isStuck.Subscribe(isStuck =>
+            {
+                if (isStuck)
+                {
+                    OnStuck.Execute();
+                }
+            });
+        }
+    }
+
+    public void Tick()
+    {
+        tetrisGrid.DefaultMove(blocks);
     }
 
     public void Rotate()
     {
-        foreach (Block block in blocks)
-        { 
-            block.position.Value = rotator.GetRotatedPosition(block.position.Value, currentAxis.Value);
-        }
+        tetrisGrid.Rotate(blocks);
     }
 
-    public void SetMover(IMover mover)
+    public void MoveLeft()
     {
-        if (this.mover == mover)
-        {
-            return;
-        }
-
-        this.mover = mover;
+        tetrisGrid.MoveLeft(blocks);
     }
 
-    public void SetRotator(IRotator rotator)
+    public void MoveRight()
     {
-        if (this.rotator == rotator)
-        {
-            return;
-        }
-
-        this.rotator = rotator;
+        tetrisGrid.MoveRight(blocks);
     }
 
-    public void Move()
+    public void MoveDown()
     {
-        foreach (Block block in blocks)
-        {
-            block.position.Value = mover.GetMovedPosition(block.position.Value);
-        }
+        tetrisGrid.MoveDown(blocks);
     }
 }

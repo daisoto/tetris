@@ -1,88 +1,162 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
 
 public class TetrisGrid
 {
-    public Vector2Int size = default;
-
-    public ReactiveCommand<Block> onInsert = new ReactiveCommand<Block>();
+    public ReactiveCommand<Block[]> onInsert = new ReactiveCommand<Block[]>();
     public ReactiveCommand onClear = new ReactiveCommand();
 
     private bool[,] grid = null;
 
     private IGridChecker gridChecker = null;
 
-    private Dictionary<Vector2Int, Block> cellBlocks = new Dictionary<Vector2Int, Block>();
+    private IBlocksMover blocksMover = null;
+
+    private IBlocksRotator blocksRotator = null;
+
+    private Dictionary<Vector2Int, Block> positionStuckBlocks = new Dictionary<Vector2Int, Block>();
+
+    private ScoreManager scoreManager = null;
 
     private DisposablesContainer disposablesContainer = new DisposablesContainer();
 
-    public TetrisGrid(Vector2Int size, IGridChecker gridChecker)
+    private List<Block> movingBlocks = new List<Block>();
+
+    public TetrisGrid(bool[,] grid, IGridChecker gridChecker, IBlocksMover blockMover, IBlocksRotator blocksRotator, ScoreManager scoreManager)
     {
-        this.size = size;
+        this.grid = grid;
         this.gridChecker = gridChecker;
+        this.scoreManager = scoreManager;
+        this.blocksMover = blockMover;
+        this.blocksRotator = blocksRotator;
 
-        grid = new bool[size.x, size.y];
-
-        disposablesContainer.Add(onInsert.Subscribe(block =>
+        disposablesContainer.Add(onInsert.Subscribe(blocks =>
         {
-            if (IsRowColumnFilled(block.position.Value, out Vector2Int[] positionsToClear))
-            {
-                Array.ForEach(positionsToClear, position => Clear(position));
-                onClear.Execute();
-            }
+            ProcessInsertedBlocks(blocks);
         }));
 
         disposablesContainer.Add(onClear.Subscribe(_ => 
         {
-            // TODO: падение имеющихся блоков (связать с IGridChecker), нужно откуда то их взять
+            ProcessAfterCleaning();
         }));
     }
 
-    public bool TryToInsert(Block block)
+    public void AddBlocks(Block[] blocks)
     {
-        if (IsNextSpaceFree(block.position.Value))
+        movingBlocks.AddRange(blocks);
+    }
+
+    public void Rotate(Block[] blocks)
+    {
+        blocksRotator.Rotate(blocks);
+    }
+
+    public void DefaultMove(Block[] blocks)
+    {
+        foreach (Block block in blocks)
         {
-            Insert(block);
-            return false;
+            if (!gridChecker.IsDefaultSpaceFree(block.position.Value))
+            {
+                Insert(blocks);
+                return;
+            }
         }
-        else
+
+        blocksMover.MoveDefault(blocks);
+    }
+
+    public void MoveLeft(Block[] blocks)
+    {
+        foreach (Block block in blocks)
         {
-            return true;
+            if (!gridChecker.IsLeftSpaceFree(block.position.Value))
+            {
+                return;
+            }
+        }
+
+        blocksMover.MoveLeft(blocks);
+    }
+
+    public void MoveRight(Block[] blocks)
+    {
+        foreach (Block block in blocks)
+        {
+            if (!gridChecker.IsDownSpaceFree(block.position.Value))
+            {
+                return;
+            }
+        }
+
+        blocksMover.MoveRight(blocks);
+    }
+
+    public void MoveDown(Block[] blocks)
+    {
+        foreach (Block block in blocks)
+        {
+            if (!gridChecker.IsDownSpaceFree(block.position.Value))
+            {            
+                return;
+            }
+        }
+
+        blocksMover.MoveDown(blocks);
+    }
+
+    public void Insert(Block[] blocks)
+    {
+        foreach (Block block in blocks)
+        {
+            block.isStuck.Value = true;
+            Vector2Int position = block.position.Value;
+            positionStuckBlocks.Add(position, block);
+            grid[position.x, position.y] = true;
+        }
+
+        onInsert.Execute(blocks);
+    }    
+
+    private void ProcessInsertedBlocks(IEnumerable<Block> blocks)
+    {
+        int rawScore = 0;
+        List<Vector2Int> positionsToClear = new List<Vector2Int>();
+
+        foreach (Block block in blocks)
+        {
+            if (gridChecker.IsRowColumnFilled(block.position.Value, out Vector2Int[] newPositionsToClear))
+            {
+                positionsToClear.AddRange(newPositionsToClear);
+                rawScore++;
+            }
+        }
+
+        if (rawScore > 0)
+        {
+            scoreManager.SendScore(rawScore);
+            ClearBlocks(positionsToClear.ToArray());
         }
     }
 
-    public void Insert(Block block)
+    private void ClearBlocks(Vector2Int[] positionsToClear)
     {
-        Vector2Int position = block.position.Value;
-
-        cellBlocks.Add(position, block);
-
-        grid[position.x, position.y] = true;
-
-        onInsert.Execute(block);
+        foreach (Vector2Int positionToClear in positionsToClear)
+        {
+            positionStuckBlocks[positionToClear].isAlive.Value = false;
+            positionStuckBlocks.Remove(positionToClear);
+            grid[positionToClear.x, positionToClear.y] = false;
+        }
     }
 
-    public void Clear(Vector2Int point)
+    private void ProcessAfterCleaning()
     {
-        cellBlocks[point].isAlive.Value = false;
-        cellBlocks.Remove(point);
-        grid[point.x, point.y] = false;
-    }
-
-    public bool IsRowColumnFilled(Vector2Int position, out Vector2Int[] positionsToClear)
-    {
-        return gridChecker.IsRowColumnFilled(position, out positionsToClear);
-    }
-
-    public bool IsNextSpaceFree(Vector2Int position)
-    {
-        return gridChecker.IsNextSpaceFree(position);
-    }
-
-    public bool IsSpaceFree(Vector2Int position)
-    {
-        return !grid[position.x, position.y];
+        foreach (Vector2Int position in positionStuckBlocks.Keys)
+        {
+            if (gridChecker.IsDefaultSpaceFree(position))
+            {
+                blocksMover.MoveDefault(positionStuckBlocks[position]);
+            }
+        }
     }
 }

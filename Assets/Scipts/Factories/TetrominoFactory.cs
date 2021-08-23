@@ -8,8 +8,13 @@ public class TetrominoFactory : IFactory<Tetromino>
 
     private Vector2Int initialPosition = default;
 
-    public TetrominoFactory(Vector2Int initialPosition)
+    private TetrisGrid tetrisGrid = null;
+
+    private Vector2Int currentCenter { get => initialPosition - new Vector2Int(tetrominoData.size.y / 2, tetrominoData.size.y); }
+
+    public TetrominoFactory(Vector2Int initialPosition, TetrisGrid tetrisGrid)
     {
+        this.tetrisGrid = tetrisGrid;
         this.initialPosition = initialPosition;
     }
 
@@ -21,7 +26,7 @@ public class TetrominoFactory : IFactory<Tetromino>
         }
         else
         {
-            return new Tetromino(blocks);
+            return new Tetromino(tetrisGrid, blocks);
         }
     }
 
@@ -51,15 +56,13 @@ public class TetrominoFactory : IFactory<Tetromino>
             return;
         }
 
-        Vector2Int lowerCenter = new Vector2Int(tetrominoData.size.y / 2, tetrominoData.size.y);
-
         for (int i = 0; i < tetrominoData.size.x; i++)
         {
             for (int j = 0; j < tetrominoData.size.y; j++)
             {
                 if (tetrominoData.shape[i, j])
                 {
-                    blocks[tetrominoData.size.y * i + j].position.Value = initialPosition + new Vector2Int(i, j) - lowerCenter;
+                    blocks[tetrominoData.size.y * i + j].position.Value = currentCenter + new Vector2Int(i, j);
                 }
             }
         }

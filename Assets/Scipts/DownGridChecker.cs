@@ -4,7 +4,7 @@ public class DownGridChecker : GridChecker
 {
     public DownGridChecker(bool[,] grid) : base(grid) { }
 
-    public override bool IsNextSpaceFree(Vector2Int position)
+    public override bool IsDefaultSpaceFree(Vector2Int position)
     {
         return IsDownSpaceFree(position);
     }
