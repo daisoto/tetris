@@ -16,11 +16,12 @@ public class Round : ConstructableBehaviour<RoundData>
 
     private IEnumerator coroutine = null;
 
-    public override void Construct(RoundData roundData)
+    public void Construct(RoundData roundData, IFactory<Tetromino> tetrominoFactory)
     {
-        base.Construct(roundData);
-
+        this.tetrominoFactory = tetrominoFactory;
         coroutine = UpdateTick();
+
+        Construct(roundData);
     }
 
     public void StartRound()
@@ -56,7 +57,7 @@ public class Round : ConstructableBehaviour<RoundData>
 
     private void SetCurrentTetramino()
     {
-        currentTetromino = tetrominoFactory.Create();
+        currentTetromino = tetrominoFactory?.Create();
 
         disposablesContainer.Add(currentTetromino.OnStuck.Subscribe(_ =>
         {

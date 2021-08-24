@@ -10,7 +10,16 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
 
     private int currentIndex = 0;
 
+    private IFactory<Tetromino> tetrominoFactory = null;
+
     private Round round = null;
+
+    public void Construct(RoundData[] roundDatas, IFactory<Tetromino> tetrominoFactory)
+    {
+        this.tetrominoFactory = tetrominoFactory;
+
+        base.Construct(roundDatas);
+    }
 
     public void StartNewRound()
     {
@@ -37,7 +46,7 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
 
         RoundData currentData = model[currentIndex];
 
-        round.Construct(currentData);
+        round.Construct(currentData, tetrominoFactory);
         currentIndex++;
 
         OnRoundSet.Execute(currentData);

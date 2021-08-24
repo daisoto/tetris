@@ -37,7 +37,7 @@ public class TetrominoFactory : IFactory<Tetromino>
 
     private void SetBlocksPosition(TetrominoData tetrominoData, Block[] blocks)
     {
-        Vector2Int currentCenter = initialPosition - new Vector2Int(tetrominoData.size.x / 2, tetrominoData.size.y);
+        Vector2Int currentCenter = initialPosition + new Vector2Int(tetrominoData.size.x / 2, tetrominoData.size.y);
 
         for (int i = 0; i < tetrominoData.size.x; i++)
         {

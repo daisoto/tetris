@@ -3,7 +3,7 @@ using System;
 
 public class DisposablesContainer
 {
-    private List<IDisposable> disposables = null;
+    private List<IDisposable> disposables = new List<IDisposable>();
 
     ~DisposablesContainer()
     {

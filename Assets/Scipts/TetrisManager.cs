@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
+using UniRx;
 
 public class TetrisManager: MonoBehaviour
 {
     [SerializeField] private RoundsManager roundsManager = null;
-    [SerializeField] private BlockBehavioursGenerator blockBehavioursGenerator = null;
-    [SerializeField] private TetrisSettingsData tetrisSettings = null;
 
-    private ScoreManager scoreManager = new ScoreManager();
+    [SerializeField] private BlockBehavioursGenerator blockBehavioursGenerator = null;
+
+    [SerializeField] private TetrisSettingsData tetrisSettingsData = null;
+
+    private ScoreManager scoreManager = null;
 
     private bool[,] grid = null;
 
@@ -17,34 +20,51 @@ public class TetrisManager: MonoBehaviour
     private TetrisGrid tetrisGrid = null;
 
     private TetrominoFactory tetrominoFactory = null;
-
     private BlocksFactory blocksFactory = null;
     private BlocksPool blocksPool = null;
 
+    private DisposablesContainer disposablesContainer = new DisposablesContainer();
 
-    private Round round = null;
-
-    public TetrisManager(TetrisSettingsData tetrisSettings, Round round, BlockBehavioursGenerator blockBehavioursGenerator)
+    private void Awake()
     {
-        this.tetrisSettings = tetrisSettings;
+        Install();
+    }
 
-        grid = new bool[tetrisSettings.size.x + 1, tetrisSettings.size.y];
+    private void OnEnable()
+    {
+        disposablesContainer.Add(tetrisGrid.OnBlocksClear.Subscribe(rawScore =>
+        {
+            scoreManager?.SendScore(rawScore);
+        }));
+
+        disposablesContainer.Add(roundsManager.OnRoundSet.Subscribe(roundData =>
+        {
+            blocksPool?.Clear();
+            blocksFactory?.SetBlockData(roundData.blockData);
+        }));
+    }
+
+    private void OnDisable()
+    {
+        disposablesContainer.Clear();
+    }
+
+    private void Install()
+    {
+        scoreManager = new ScoreManager();
+        grid = new bool[tetrisSettingsData.size.x, tetrisSettingsData.size.y + tetrisSettingsData.GetMaxTetrominoSize().y];
 
         blocksMover = new DownBlocksMover(grid);
         blocksRotator = new RightAngleBlocksRotator(grid);
         gridChecker = new DownGridChecker(grid);
 
-        tetrisGrid = new TetrisGrid(grid, gridChecker, blocksMover, blocksRotator, scoreManager);
+        tetrisGrid = new TetrisGrid(grid, gridChecker, blocksMover, blocksRotator);
 
         blocksFactory = new BlocksFactory();
         blocksPool = new BlocksPool(blocksFactory);
-        tetrominoFactory = new TetrominoFactory(tetrisSettings.initialPosition, tetrisGrid, blocksPool, tetrisSettings.tetrominoDatas);
-
-        this.blockBehavioursGenerator = blockBehavioursGenerator;
+        tetrominoFactory = new TetrominoFactory(tetrisSettingsData.initialPosition, tetrisGrid, blocksPool, tetrisSettingsData.tetrominoDatas);
 
         blockBehavioursGenerator.Construct(blocksFactory);
-
-        this.round = round;
-        roundsManager = new RoundsManager(tetrisSettings.roundDatas, round, blocksPool);
+        roundsManager.Construct(tetrisSettingsData.roundDatas, tetrominoFactory);
     }
 }
