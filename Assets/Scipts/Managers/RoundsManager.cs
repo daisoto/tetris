@@ -1,18 +1,15 @@
 ﻿using UniRx;
-using UnityEngine;
 
 public class RoundsManager : ConstructableBehaviour<RoundData[]>
 {
     public ReactiveCommand OnRoundsFinish = new ReactiveCommand();
     public ReactiveCommand<RoundData> OnRoundSet = new ReactiveCommand<RoundData>();
 
-    [SerializeField] private Round roundPrefab = null;
-
     private int currentIndex = 0;
 
     private IFactory<Tetromino> tetrominoFactory = null;
 
-    private Round round = null;
+    private Round currentRound = null;
 
     public void Construct(RoundData[] roundDatas, IFactory<Tetromino> tetrominoFactory)
     {
@@ -31,14 +28,14 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
         }
 
         SetNewRound();
-        round.StartRound();
+        currentRound.StartRound();
     }
 
     private void SetNewRound()
     {
-        round = Instantiate(roundPrefab, transform);
+        currentRound = gameObject.AddComponent<Round>();
 
-        disposablesContainer.Add(round.OnRoundEnd.Subscribe(_ =>
+        disposablesContainer.Add(currentRound.OnRoundEnd.Subscribe(_ =>
         {
             disposablesContainer.Clear();
             StartNewRound();
@@ -46,7 +43,7 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
 
         RoundData currentData = model[currentIndex];
 
-        round.Construct(currentData, tetrominoFactory);
+        currentRound.Construct(currentData, tetrominoFactory);
         currentIndex++;
 
         OnRoundSet.Execute(currentData);
