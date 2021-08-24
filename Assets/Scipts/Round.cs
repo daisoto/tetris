@@ -69,7 +69,10 @@ public class Round : ConstructableBehaviour<RoundData>
 
     private IEnumerator UpdateTick()
     {
-        yield return new WaitForSeconds(roundData.fallPeriod);
-        currentTetromino?.Tick();
+        while (true)
+        {
+            currentTetromino?.Tick();
+            yield return new WaitForSeconds(roundData.fallPeriod);
+        }
     }
 }

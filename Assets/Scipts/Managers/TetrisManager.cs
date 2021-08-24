@@ -9,6 +9,8 @@ public class TetrisManager: MonoBehaviour
 
     [SerializeField] private TetrisSettingsData tetrisSettingsData = null;
 
+    [SerializeField] private InputManager inputManager = null;
+
     private ScoreManager scoreManager = null;
 
     private bool[,] grid = null;
@@ -28,6 +30,11 @@ public class TetrisManager: MonoBehaviour
     private void Awake()
     {
         Install();
+    }
+
+    private void Start()
+    {
+        inputManager.SetActive(true);
     }
 
     private void OnEnable()

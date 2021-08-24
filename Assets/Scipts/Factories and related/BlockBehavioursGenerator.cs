@@ -16,11 +16,14 @@ public class BlockBehavioursGenerator: ConstructableBehaviour<BlocksFactory>
 
     protected override void OnEnable()
     {
-        disposablesContainer.Add(model.OnBlockCreate.Subscribe(block =>
+        if (isConstructed)
         {
-            BlockBehaviour blockBehaviour = Instantiate(blockBehaviourPrefab, transform);
-            blockBehaviour.transform.localScale = new Vector3(blockSize.x, blockSize.y, 1);
-            blockBehaviour.Construct(block);
-        }));
+            disposablesContainer.Add(model.OnBlockCreate.Subscribe(block =>
+            {
+                BlockBehaviour blockBehaviour = Instantiate(blockBehaviourPrefab, transform);
+                blockBehaviour.transform.localScale = new Vector3(blockSize.x, blockSize.y, 1);
+                blockBehaviour.Construct(block);
+            }));
+        }
     }
 }
