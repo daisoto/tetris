@@ -52,7 +52,7 @@ public class TetrisManager: MonoBehaviour
     private void Install()
     {
         scoreManager = new ScoreManager();
-        grid = new bool[tetrisSettingsData.size.x, tetrisSettingsData.size.y + tetrisSettingsData.GetMaxTetrominoSize().y];
+        grid = new bool[tetrisSettingsData.gridSize.x, tetrisSettingsData.gridSize.y + tetrisSettingsData.GetMaxTetrominoSize().y];
 
         blocksMover = new DownBlocksMover(grid);
         blocksRotator = new RightAngleBlocksRotator(grid);
@@ -64,7 +64,7 @@ public class TetrisManager: MonoBehaviour
         blocksPool = new BlocksPool(blocksFactory);
         tetrominoFactory = new TetrominoFactory(tetrisSettingsData.initialPosition, tetrisGrid, blocksPool, tetrisSettingsData.tetrominoDatas);
 
-        blockBehavioursGenerator.Construct(blocksFactory);
+        blockBehavioursGenerator.Construct(blocksFactory, tetrisSettingsData.blockSize);
         roundsManager.Construct(tetrisSettingsData.roundDatas, tetrominoFactory);
     }
 }

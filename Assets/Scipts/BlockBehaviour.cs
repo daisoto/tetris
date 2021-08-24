@@ -22,7 +22,7 @@ public class BlockBehaviour : ConstructableBehaviour<Block>
         {
             disposablesContainer.Add(model.position.Subscribe(position =>
             {
-                transform.position = new Vector3(position.x, position.y, zPosition);
+                transform.position = new Vector3(position.x * transform.localScale.x, position.y * transform.localScale.y, zPosition);
             }));
 
             disposablesContainer.Add(model.color.Subscribe(color =>

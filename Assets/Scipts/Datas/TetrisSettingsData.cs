@@ -3,18 +3,18 @@
 [CreateAssetMenu(fileName = "New TetrisSettingsData", menuName = "Tetris settings data")]
 public class TetrisSettingsData : ScriptableObject
 {
-    public Vector2Int size
+    public Vector2Int gridSize
     {
         get
         {
-            Vector2Int finalSize = _size;
+            Vector2Int finalSize = _gridSize;
             Vector2Int maxTetrominoSize = GetMaxTetrominoSize();
 
-            if (maxTetrominoSize.x > _size.x)
+            if (maxTetrominoSize.x > _gridSize.x)
             {
                 finalSize.x = maxTetrominoSize.x;
             }
-            if (maxTetrominoSize.y > _size.y)
+            if (maxTetrominoSize.y > _gridSize.y)
             {
                 finalSize.y = maxTetrominoSize.y;
             }
@@ -27,9 +27,11 @@ public class TetrisSettingsData : ScriptableObject
     {
         get
         {
-            return new Vector2Int(size.x / 2, size.y);
+            return new Vector2Int(gridSize.x / 2, gridSize.y);
         }
     }
+
+    public Vector2Int blockSize { get => _blockSize; }
 
     public TetrominoData[] tetrominoDatas { get => _tetrominoDatas; }
 
@@ -39,7 +41,9 @@ public class TetrisSettingsData : ScriptableObject
 
     [SerializeField] private TetrominoData[] _tetrominoDatas;
 
-    [SerializeField] private Vector2Int _size = new Vector2Int(10, 20);
+    [SerializeField] private Vector2Int _gridSize = new Vector2Int(10, 20);
+
+    [SerializeField] private Vector2Int _blockSize = new Vector2Int(1, 1);
 
     public Vector2Int GetMaxTetrominoSize()
     {
