@@ -1,45 +1,45 @@
 ﻿using UniRx;
+using UnityEngine;
 
-public class RoundsManager
+public class RoundsManager : ConstructableBehaviour<RoundData[]>
 {
-    public ReactiveCommand OnGameFinish = new ReactiveCommand();
+    public ReactiveCommand OnRoundsFinish = new ReactiveCommand();
+    public ReactiveCommand<RoundData> OnRoundSet = new ReactiveCommand<RoundData>();
 
-    private RoundData[] roundDatas = null;
+    [SerializeField] private Round roundPrefab = null;
 
-    private int currentIndex = -1;
+    private int currentIndex = 0;
 
     private Round round = null;
 
-    private IPool<Block> blocksPool = null;
-
-    private DisposablesContainer disposablesContainer = new DisposablesContainer();
-
-    public RoundsManager(RoundData[] roundDatas, Round round, IPool<Block> blocksPool)
-    {
-        this.blocksPool = blocksPool;
-        this.roundDatas = roundDatas;
-        this.round = round;
-    }
-
     public void StartNewRound()
     {
-        blocksPool.Clear();
-
-        if (currentIndex + 1 > roundDatas.Length)
+        if (currentIndex > model.Length)
         {
-            OnGameFinish.Execute();
+            OnRoundsFinish.Execute();
 
             return;
         }
 
-        disposablesContainer.Add(round.OnRoundEnd.Subscribe(_ => 
+        SetNewRound();
+        round.StartRound();
+    }
+
+    private void SetNewRound()
+    {
+        round = Instantiate(roundPrefab, transform);
+
+        disposablesContainer.Add(round.OnRoundEnd.Subscribe(_ =>
         {
             disposablesContainer.Clear();
             StartNewRound();
         }));
 
+        RoundData currentData = model[currentIndex];
+
+        round.Construct(currentData);
         currentIndex++;
-        round.Construct(roundDatas[currentIndex]);
-        round.StartRound();
+
+        OnRoundSet.Execute(currentData);
     }
 }

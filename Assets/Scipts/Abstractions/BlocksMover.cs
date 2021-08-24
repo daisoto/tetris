@@ -17,8 +17,13 @@ public abstract class BlocksMover : IBlocksMover
     {
         foreach (Block block in blocks)
         {
-            block.position.Value -= Vector2Int.down; // since the coordinate axis is directed downward
+            block.position.Value += Vector2Int.down;
         }
+    }
+
+    public void MoveDown(Block block)
+    {
+        block.position.Value += Vector2Int.down;
     }
 
     public void MoveLeft(Block[] blocks)
@@ -29,11 +34,21 @@ public abstract class BlocksMover : IBlocksMover
         }
     }
 
+    public void MoveLeft(Block block)
+    {
+        block.position.Value += Vector2Int.left;
+    }
+
     public void MoveRight(Block[] blocks)
     {
         foreach (Block block in blocks)
         {
             block.position.Value += Vector2Int.right;
         }
+    }
+
+    public void MoveRight(Block block)
+    {
+        block.position.Value += Vector2Int.right;
     }
 }

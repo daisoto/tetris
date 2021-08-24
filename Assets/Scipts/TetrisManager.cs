@@ -1,8 +1,12 @@
-﻿public class TetrisManager
-{
-    private ScoreManager scoreManager = new ScoreManager();
+﻿using UnityEngine;
 
-    private TetrisSettingsData tetrisSettings = null;
+public class TetrisManager: MonoBehaviour
+{
+    [SerializeField] private RoundsManager roundsManager = null;
+    [SerializeField] private BlockBehavioursGenerator blockBehavioursGenerator = null;
+    [SerializeField] private TetrisSettingsData tetrisSettings = null;
+
+    private ScoreManager scoreManager = new ScoreManager();
 
     private bool[,] grid = null;
 
@@ -17,9 +21,7 @@
     private BlocksFactory blocksFactory = null;
     private BlocksPool blocksPool = null;
 
-    private BlockBehavioursGenerator blockBehavioursGenerator = null;
 
-    private RoundsManager roundsManager = null;
     private Round round = null;
 
     public TetrisManager(TetrisSettingsData tetrisSettings, Round round, BlockBehavioursGenerator blockBehavioursGenerator)

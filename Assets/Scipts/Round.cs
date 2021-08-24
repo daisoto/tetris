@@ -2,15 +2,13 @@
 using System.Collections;
 using UnityEngine;
 
-public class Round: ConstructableBehaviour<RoundData>
+public class Round : ConstructableBehaviour<RoundData>
 {
     public ReactiveCommand OnRoundEnd = new ReactiveCommand();
 
     private RoundData roundData = null;
-    
+
     private IFactory<Tetromino> tetrominoFactory = null;
-    
-    private BlocksFactory blocksFactory = null;
 
     private Tetromino currentTetromino = null;
 
@@ -21,8 +19,6 @@ public class Round: ConstructableBehaviour<RoundData>
     public override void Construct(RoundData roundData)
     {
         base.Construct(roundData);
-
-        blocksFactory.SetBlockData(roundData.blockData);
 
         coroutine = UpdateTick();
     }
@@ -40,17 +36,27 @@ public class Round: ConstructableBehaviour<RoundData>
 
     public void ContinueRound()
     {
-        StartCoroutine(coroutine);
-
         if (tetrominoCounter > roundData.tetrominosInRound)
         {
-            OnRoundEnd.Execute();
             StopCoroutine(coroutine);
+
+            OnRoundEnd.Execute();
 
             return;
         }
 
-        currentTetromino = currentTetromino == null ? tetrominoFactory.Create(): currentTetromino;
+        if (currentTetromino == null)
+        {
+            disposablesContainer.Clear();
+            SetCurrentTetramino();
+        }
+
+        StartCoroutine(coroutine);
+    }
+
+    private void SetCurrentTetramino()
+    {
+        currentTetromino = tetrominoFactory.Create();
 
         disposablesContainer.Add(currentTetromino.OnStuck.Subscribe(_ =>
         {

@@ -6,9 +6,12 @@ public class BlockBehaviour : ConstructableBehaviour<Block>
 {
     private SpriteRenderer spriteRenderer = null;
 
+    private float zPosition = default;
+
     public override void Construct(Block block)
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        zPosition = transform.position.z;
 
         base.Construct(block);
     }
@@ -19,7 +22,7 @@ public class BlockBehaviour : ConstructableBehaviour<Block>
         {
             disposablesContainer.Add(model.position.Subscribe(position =>
             {
-                transform.position = new Vector3(position.x, position.y, 0);
+                transform.position = new Vector3(position.x, position.y, zPosition);
             }));
 
             disposablesContainer.Add(model.color.Subscribe(color =>
