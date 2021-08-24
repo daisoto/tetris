@@ -8,11 +8,15 @@ public class BlocksFactory : IFactory<Block>
 
     public Block Create()
     {
-        Block block = new Block();
+        Block block = null;
 
         if (blockData != null)
         {
             block = new Block(blockData.color, blockData.sprite);
+        }
+        else
+        {
+            block = new Block();
         }
 
         OnBlockCreate.Execute(block);

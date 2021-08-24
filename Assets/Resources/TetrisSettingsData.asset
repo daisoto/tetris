@@ -23,5 +23,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d8fe42f36c097e147bb9d84360afb186, type: 2}
   - {fileID: 11400000, guid: e84c0b090c667fb4fbd7f617d1922377, type: 2}
   - {fileID: 11400000, guid: 9159d2a1f932f8f44a44ccd934ad257b, type: 2}
-  _size: {x: 10, y: 20}
-  _initialPosition: {x: 5, y: -1}
+  _gridSize: {x: 10, y: 20}
+  _initialPosition: {x: 5, y: 20}
+  _blockSize: {x: 1, y: 1}
+  _inputUpdateTime: 0.1

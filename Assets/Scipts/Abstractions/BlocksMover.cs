@@ -3,7 +3,6 @@
 public abstract class BlocksMover : IBlocksMover
 {
     protected bool[,] grid = null;
-    protected Vector2Int blockSize = default;
 
     public BlocksMover(bool[,] grid)
     {
@@ -18,38 +17,38 @@ public abstract class BlocksMover : IBlocksMover
     {
         foreach (Block block in blocks)
         {
-            block.position.Value += Vector2Int.down * blockSize;
+            block.position.Value += Vector2Int.down;
         }
     }
 
     public void MoveDown(Block block)
     {
-        block.position.Value += Vector2Int.down * blockSize;
+        block.position.Value += Vector2Int.down;
     }
 
     public void MoveLeft(Block[] blocks)
     {
         foreach (Block block in blocks)
         {
-            block.position.Value += Vector2Int.left * blockSize;
+            block.position.Value += Vector2Int.left;
         }
     }
 
     public void MoveLeft(Block block)
     {
-        block.position.Value += Vector2Int.left * blockSize;
+        block.position.Value += Vector2Int.left;
     }
 
     public void MoveRight(Block[] blocks)
     {
         foreach (Block block in blocks)
         {
-            block.position.Value += Vector2Int.right * blockSize;
+            block.position.Value += Vector2Int.right;
         }
     }
 
     public void MoveRight(Block block)
     {
-        block.position.Value += Vector2Int.right * blockSize;
+        block.position.Value += Vector2Int.right;
     }
 }

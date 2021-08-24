@@ -2,7 +2,7 @@ using UniRx;
 
 public class Tetromino: ITickable
 {
-    public ReactiveCommand OnStuck = new ReactiveCommand();
+    public ReactiveProperty<bool> isStuck = new ReactiveProperty<bool>(false);
 
     public Block[] blocks { get; private set; }
 
@@ -19,7 +19,7 @@ public class Tetromino: ITickable
             {
                 if (isStuck)
                 {
-                    OnStuck.Execute();
+                    this.isStuck.Value = true;
                 }
             });
         }

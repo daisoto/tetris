@@ -2,8 +2,10 @@
 using UnityEngine.InputSystem;
 using UniRx;
 
-public class InputManager: MonoBehaviour
+public class InputManager: MonoBehaviour, IConstructable<float>
 {
+    public bool isConstructed { get; private set; }
+
     public ReactiveCommand OnDownPressed => downContinuousPressProcessor.OnPressed;
     public ReactiveCommand OnLeftPressed => leftContinuousPressProcessor.OnPressed;
     public ReactiveCommand OnRightPressed => rightContinuousPressProcessor.OnPressed;
@@ -16,19 +18,43 @@ public class InputManager: MonoBehaviour
 
     private PlayerControls playerControls = null;
 
-    private readonly float updateTime = 0.1f;
+    private float updateTime = 0.1f;
 
-    private void Awake()
+    public void Construct(float updateTime)
     {
+        this.updateTime = updateTime;
+
         playerControls = new PlayerControls();
 
         CreatePressProcessors();
 
-        playerControls.Keyboard.Movement.started += ctx => ProcessMovementInput(ctx);
-        playerControls.Keyboard.Movement.canceled += ctx => StopMovementPressProcessors();
+        isConstructed = transform;
 
-        playerControls.Keyboard.Rotation.started += ctx => { rotateContinuousPressProcessor.isPressed.Value = true; };
-        playerControls.Keyboard.Rotation.canceled += ctx => { rotateContinuousPressProcessor.isPressed.Value = false; };
+        OnEnable();
+    }
+
+    private void OnEnable()
+    {
+        if (isConstructed)
+        {
+            playerControls.Keyboard.Movement.started += ctx => ProcessMovementInput(ctx);
+            playerControls.Keyboard.Movement.canceled += ctx => StopMovementPressProcessors();
+
+            playerControls.Keyboard.Rotation.started += ctx => { rotateContinuousPressProcessor.isPressed.Value = true; };
+            playerControls.Keyboard.Rotation.canceled += ctx => { rotateContinuousPressProcessor.isPressed.Value = false; };
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (playerControls != null)
+        {
+            playerControls.Keyboard.Movement.started -= ctx => ProcessMovementInput(ctx);
+            playerControls.Keyboard.Movement.canceled -= ctx => StopMovementPressProcessors();
+
+            playerControls.Keyboard.Rotation.started -= ctx => { rotateContinuousPressProcessor.isPressed.Value = true; };
+            playerControls.Keyboard.Rotation.canceled -= ctx => { rotateContinuousPressProcessor.isPressed.Value = false; };
+        }
     }
 
     public void SetActive(bool flag)

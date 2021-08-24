@@ -23,13 +23,9 @@ public class TetrisSettingsData : ScriptableObject
         }
     }
 
-    public Vector2Int initialPosition
-    {
-        get
-        {
-            return new Vector2Int(gridSize.x / 2, gridSize.y);
-        }
-    }
+    public Vector2Int initialPosition { get => _initialPosition; }
+
+    public float inputUpdateTime { get => _inputUpdateTime; }
 
     public Vector2Int blockSize { get => _blockSize; }
 
@@ -43,7 +39,11 @@ public class TetrisSettingsData : ScriptableObject
 
     [SerializeField] private Vector2Int _gridSize = new Vector2Int(10, 20);
 
+    [SerializeField] private Vector2Int _initialPosition = new Vector2Int(5, 20);
+
     [SerializeField] private Vector2Int _blockSize = new Vector2Int(1, 1);
+
+    [SerializeField] private float _inputUpdateTime = 0.1f;
 
     public Vector2Int GetMaxTetrominoSize()
     {

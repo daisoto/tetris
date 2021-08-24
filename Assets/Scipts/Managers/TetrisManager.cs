@@ -27,6 +27,8 @@ public class TetrisManager: MonoBehaviour
 
     private DisposablesContainer disposablesContainer = new DisposablesContainer();
 
+    private DisposablesContainer inputDisposablesContainer = new DisposablesContainer();
+
     private void Awake()
     {
         Install();
@@ -35,6 +37,8 @@ public class TetrisManager: MonoBehaviour
     private void Start()
     {
         inputManager.SetActive(true);
+
+        roundsManager.StartNewRound();
     }
 
     private void OnEnable()
@@ -49,6 +53,8 @@ public class TetrisManager: MonoBehaviour
             blocksPool?.Clear();
             blocksFactory?.SetBlockData(roundData.blockData);
         }));
+
+        BindInputManager();
     }
 
     private void OnDisable()
@@ -73,5 +79,41 @@ public class TetrisManager: MonoBehaviour
 
         blockBehavioursGenerator.Construct(blocksFactory, tetrisSettingsData.blockSize);
         roundsManager.Construct(tetrisSettingsData.roundDatas, tetrominoFactory);
+
+        inputManager.Construct(tetrisSettingsData.inputUpdateTime);
+    }
+
+    private void BindInputManager()
+    {
+        disposablesContainer.Add(tetrominoFactory.OnTetrominoCreated.Subscribe(tetromino =>
+        {
+            inputDisposablesContainer.Add(inputManager.OnDownPressed.Subscribe(_ =>
+            {
+                tetromino?.MoveDown();
+            }));
+
+            inputDisposablesContainer.Add(inputManager.OnLeftPressed.Subscribe(_ =>
+            {
+                tetromino?.MoveLeft();
+            }));
+
+            inputDisposablesContainer.Add(inputManager.OnRightPressed.Subscribe(_ =>
+            {
+                tetromino?.MoveRight();
+            }));
+
+            inputDisposablesContainer.Add(inputManager.OnRotatePressed.Subscribe(_ =>
+            {
+                tetromino?.Rotate();
+            }));
+
+            inputDisposablesContainer.Add(tetromino.isStuck.Subscribe(isStuck =>
+            {
+                if (isStuck)
+                {
+                    inputDisposablesContainer.Clear();
+                }
+            }));
+        }));
     }
 }

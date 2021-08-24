@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using UniRx;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TetrominoFactory : IFactory<Tetromino>
 {
+    public ReactiveCommand<Tetromino> OnTetrominoCreated = new ReactiveCommand<Tetromino>();
+
     private TetrominoData[] tetrominoDatas = null;
 
     private Vector2Int initialPosition = default;
@@ -25,19 +28,25 @@ public class TetrominoFactory : IFactory<Tetromino>
 
         List<Block> blocks = new List<Block>();
 
-        for (int i = 0; i < tetrominoData.capacity; i++)
+        for (int i = 0; i < tetrominoData.GetBlocksNum(); i++)
         {
             blocks.Add(blocksPool.Get());
         }
 
         SetBlocksPosition(tetrominoData, blocks.ToArray());
 
-        return new Tetromino(tetrisGrid, blocks.ToArray());
+        Tetromino tetromino = new Tetromino(tetrisGrid, blocks.ToArray());
+
+        OnTetrominoCreated.Execute(tetromino);
+
+        return tetromino;
     }
 
     private void SetBlocksPosition(TetrominoData tetrominoData, Block[] blocks)
     {
-        Vector2Int currentCenter = initialPosition + new Vector2Int(tetrominoData.size.x / 2, tetrominoData.size.y);
+        Vector2Int axis = initialPosition + new Vector2Int(tetrominoData.size.x / 2, 0);
+
+        int blockIndex = 0;
 
         for (int i = 0; i < tetrominoData.size.x; i++)
         {
@@ -45,7 +54,8 @@ public class TetrominoFactory : IFactory<Tetromino>
             {
                 if (tetrominoData.shape[i, j])
                 {
-                    blocks[tetrominoData.size.y * i + j].position.Value = currentCenter + new Vector2Int(i, j);
+                    blocks[blockIndex].position.Value = axis + new Vector2Int(i, j);
+                    blockIndex++;
                 }
             }
         }

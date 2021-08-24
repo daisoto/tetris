@@ -6,8 +6,6 @@ public class Round : ConstructableBehaviour<RoundData>
 {
     public ReactiveCommand OnRoundEnd = new ReactiveCommand();
 
-    private RoundData roundData = null;
-
     private IFactory<Tetromino> tetrominoFactory = null;
 
     private Tetromino currentTetromino = null;
@@ -37,7 +35,7 @@ public class Round : ConstructableBehaviour<RoundData>
 
     public void ContinueRound()
     {
-        if (tetrominoCounter > roundData.tetrominosInRound)
+        if (tetrominoCounter > model.tetrominosInRound)
         {
             StopCoroutine(coroutine);
 
@@ -59,20 +57,23 @@ public class Round : ConstructableBehaviour<RoundData>
     {
         currentTetromino = tetrominoFactory?.Create();
 
-        disposablesContainer.Add(currentTetromino.OnStuck.Subscribe(_ =>
+        disposablesContainer.Add(currentTetromino.isStuck.Subscribe(isStuck =>
         {
-            currentTetromino = null;
-            tetrominoCounter++;
-            ContinueRound();
+            if (isStuck)
+            {
+                currentTetromino = null;
+                tetrominoCounter++;
+                ContinueRound();
+            }
         }));
     }
 
     private IEnumerator UpdateTick()
     {
-        while (true)
+        while (!currentTetromino.isStuck.Value)
         {
             currentTetromino?.Tick();
-            yield return new WaitForSeconds(roundData.fallPeriod);
+            yield return new WaitForSeconds(model.fallPeriod);
         }
     }
 }

@@ -22,12 +22,18 @@ public class BlockBehaviour : ConstructableBehaviour<Block>
         {
             disposablesContainer.Add(model.position.Subscribe(position =>
             {
-                transform.position = new Vector3(position.x * transform.localScale.x, position.y * transform.localScale.y, zPosition);
+                transform.localPosition = new Vector3(position.x * transform.localScale.x, position.y * transform.localScale.y, zPosition);
             }));
 
             disposablesContainer.Add(model.color.Subscribe(color =>
             {
                 spriteRenderer.color = color;
+            }));
+
+
+            disposablesContainer.Add(model.sprite.Subscribe(sprite =>
+            {
+                spriteRenderer.sprite = sprite;
             }));
 
             disposablesContainer.Add(model.isAlive.Subscribe(isAlive =>
