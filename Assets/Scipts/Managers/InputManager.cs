@@ -1,59 +1,69 @@
-﻿using UnityEngine;
+﻿using UniRx;
+using UnityEngine;
 using UnityEngine.InputSystem;
-using UniRx;
 
-public class InputManager: MonoBehaviour, IConstructable<float>
+public class InputManager : ITickable
 {
-    public bool isConstructed { get; private set; }
+    public ReactiveCommand onDownPressed = new ReactiveCommand();
+    public ReactiveCommand onLeftPressed = new ReactiveCommand();
+    public ReactiveCommand onRightPressed = new ReactiveCommand();
+    public ReactiveCommand onRotatePressed = new ReactiveCommand();
 
-    public ReactiveCommand OnDownPressed => downContinuousPressProcessor.OnPressed;
-    public ReactiveCommand OnLeftPressed => leftContinuousPressProcessor.OnPressed;
-    public ReactiveCommand OnRightPressed => rightContinuousPressProcessor.OnPressed;
-    public ReactiveCommand OnRotatePressed => rotateContinuousPressProcessor.OnPressed;
-
-    private ContinuousPressProcessor downContinuousPressProcessor = null;
-    private ContinuousPressProcessor leftContinuousPressProcessor = null;
-    private ContinuousPressProcessor rightContinuousPressProcessor = null;
-    private ContinuousPressProcessor rotateContinuousPressProcessor = null;
+    private bool isDownPressed = false;
+    private bool isLeftPressed = false;
+    private bool isRightPressed = false;
+    private bool isRotatePressed = false;
 
     private PlayerControls playerControls = null;
 
-    private float updateTime = 0.1f;
-
-    public void Construct(float updateTime)
+    public InputManager()
     {
-        this.updateTime = updateTime;
-
         playerControls = new PlayerControls();
 
-        CreatePressProcessors();
-
-        isConstructed = transform;
-
-        OnEnable();
+        Subscribe();
     }
 
-    private void OnEnable()
+    private void Subscribe()
     {
-        if (isConstructed)
-        {
-            playerControls.Keyboard.Movement.started += ctx => ProcessMovementInput(ctx);
-            playerControls.Keyboard.Movement.canceled += ctx => StopMovementPressProcessors();
+        playerControls.Keyboard.Movement.started += ctx => ProcessMovementInput(ctx);
+        playerControls.Keyboard.Movement.canceled += ctx => StopMovement();
 
-            playerControls.Keyboard.Rotation.started += ctx => { rotateContinuousPressProcessor.isPressed.Value = true; };
-            playerControls.Keyboard.Rotation.canceled += ctx => { rotateContinuousPressProcessor.isPressed.Value = false; };
-        }
+        playerControls.Keyboard.Rotation.started += ctx => { isRotatePressed = true; };
+        playerControls.Keyboard.Rotation.canceled += ctx => { isRotatePressed = false; };
     }
 
-    private void OnDisable()
+    ~InputManager()
     {
         if (playerControls != null)
         {
             playerControls.Keyboard.Movement.started -= ctx => ProcessMovementInput(ctx);
-            playerControls.Keyboard.Movement.canceled -= ctx => StopMovementPressProcessors();
+            playerControls.Keyboard.Movement.canceled -= ctx => StopMovement();
 
-            playerControls.Keyboard.Rotation.started -= ctx => { rotateContinuousPressProcessor.isPressed.Value = true; };
-            playerControls.Keyboard.Rotation.canceled -= ctx => { rotateContinuousPressProcessor.isPressed.Value = false; };
+            playerControls.Keyboard.Rotation.started -= ctx => { isRotatePressed = true; };
+            playerControls.Keyboard.Rotation.canceled -= ctx => { isRotatePressed = false; };
+        }
+    }
+
+    public void Tick()
+    {
+        if (isDownPressed)
+        {
+            onDownPressed?.Execute();
+        }
+
+        if (isLeftPressed)
+        {
+            onLeftPressed?.Execute();
+        }
+
+        if (isRightPressed)
+        {
+            onRightPressed?.Execute();
+        }
+
+        if (isRotatePressed)
+        {
+            onRotatePressed?.Execute();
         }
     }
 
@@ -75,39 +85,25 @@ public class InputManager: MonoBehaviour, IConstructable<float>
 
         if (movementVector == Vector2.down)
         {
-            downContinuousPressProcessor.isPressed.Value = true;
+            isDownPressed = true;
         }
 
         if (movementVector == Vector2.left)
         {
-            leftContinuousPressProcessor.isPressed.Value = true;
+            isLeftPressed = true;
         }
 
         if (movementVector == Vector2.right)
         {
-            rightContinuousPressProcessor.isPressed.Value = true;
+            isRightPressed = true;
         }
     }
 
-    private void CreatePressProcessors()
+    private void StopMovement()
     {
-        downContinuousPressProcessor = gameObject.AddComponent<ContinuousPressProcessor>();
-        downContinuousPressProcessor.Construct(updateTime);
-
-        leftContinuousPressProcessor = gameObject.AddComponent<ContinuousPressProcessor>();
-        leftContinuousPressProcessor.Construct(updateTime);
-
-        rightContinuousPressProcessor = gameObject.AddComponent<ContinuousPressProcessor>();
-        rightContinuousPressProcessor.Construct(updateTime);
-
-        rotateContinuousPressProcessor = gameObject.AddComponent<ContinuousPressProcessor>();
-        rotateContinuousPressProcessor.Construct(updateTime);
-    }
-
-    private void StopMovementPressProcessors()
-    {
-        downContinuousPressProcessor.isPressed.Value = false;
-        leftContinuousPressProcessor.isPressed.Value = false;
-        rightContinuousPressProcessor.isPressed.Value = false;
+        isDownPressed = false;
+        isLeftPressed = false;
+        isRightPressed = false;
+        isRotatePressed = false;
     }
 }

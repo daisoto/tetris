@@ -27,7 +27,10 @@ public class Tetromino: ITickable
 
     public void Tick()
     {
-        tetrisGrid.DefaultMove(blocks);
+        if (!isStuck.Value)
+        {
+            tetrisGrid.DefaultMove(blocks);
+        }
     }
 
     public void Rotate()

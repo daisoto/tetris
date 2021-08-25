@@ -70,7 +70,7 @@ public class Round : ConstructableBehaviour<RoundData>
 
     private IEnumerator UpdateTick()
     {
-        while (!currentTetromino.isStuck.Value)
+        while (true)
         {
             currentTetromino?.Tick();
             yield return new WaitForSeconds(model.fallPeriod);

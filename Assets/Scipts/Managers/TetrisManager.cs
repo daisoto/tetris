@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UniRx;
+using System.Collections;
 
 public class TetrisManager: MonoBehaviour
 {
@@ -8,8 +9,6 @@ public class TetrisManager: MonoBehaviour
     [SerializeField] private BlockBehavioursGenerator blockBehavioursGenerator = null;
 
     [SerializeField] private TetrisSettingsData tetrisSettingsData = null;
-
-    [SerializeField] private InputManager inputManager = null;
 
     private ScoreManager scoreManager = null;
 
@@ -28,6 +27,9 @@ public class TetrisManager: MonoBehaviour
     private DisposablesContainer disposablesContainer = new DisposablesContainer();
 
     private DisposablesContainer inputDisposablesContainer = new DisposablesContainer();
+
+    private InputManager inputManager = null;
+    private IEnumerator inputCoroutine = null;
 
     private void Awake()
     {
@@ -55,11 +57,15 @@ public class TetrisManager: MonoBehaviour
         }));
 
         BindInputManager();
+
+        StartCoroutine(inputCoroutine);
     }
 
     private void OnDisable()
     {
         disposablesContainer.Clear();
+
+        StopCoroutine(inputCoroutine);
     }
 
     private void Install()
@@ -80,29 +86,31 @@ public class TetrisManager: MonoBehaviour
         blockBehavioursGenerator.Construct(blocksFactory, tetrisSettingsData.blockSize);
         roundsManager.Construct(tetrisSettingsData.roundDatas, tetrominoFactory);
 
-        inputManager.Construct(tetrisSettingsData.inputUpdateTime);
+        inputManager = new InputManager();
+
+        inputCoroutine = ProcessInput();
     }
 
     private void BindInputManager()
     {
         disposablesContainer.Add(tetrominoFactory.OnTetrominoCreated.Subscribe(tetromino =>
         {
-            inputDisposablesContainer.Add(inputManager.OnDownPressed.Subscribe(_ =>
+            inputDisposablesContainer.Add(inputManager.onDownPressed.Subscribe(_ =>
             {
                 tetromino?.MoveDown();
             }));
 
-            inputDisposablesContainer.Add(inputManager.OnLeftPressed.Subscribe(_ =>
+            inputDisposablesContainer.Add(inputManager.onLeftPressed.Subscribe(_ =>
             {
                 tetromino?.MoveLeft();
             }));
 
-            inputDisposablesContainer.Add(inputManager.OnRightPressed.Subscribe(_ =>
+            inputDisposablesContainer.Add(inputManager.onRightPressed.Subscribe(_ =>
             {
                 tetromino?.MoveRight();
             }));
 
-            inputDisposablesContainer.Add(inputManager.OnRotatePressed.Subscribe(_ =>
+            inputDisposablesContainer.Add(inputManager.onRotatePressed.Subscribe(_ =>
             {
                 tetromino?.Rotate();
             }));
@@ -115,5 +123,19 @@ public class TetrisManager: MonoBehaviour
                 }
             }));
         }));
+    }
+
+    private IEnumerator ProcessInput()
+    {
+        while (true)
+        {
+            inputManager.Tick();
+            yield return new WaitForSeconds(tetrisSettingsData.inputUpdateTime);
+        }
+    }
+
+    private IEnumerator UpdateTetromino()
+    {
+        
     }
 }
