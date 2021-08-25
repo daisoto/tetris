@@ -20,7 +20,6 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
     public void Construct(RoundData[] roundDatas, IFactory<Tetromino> tetrominoFactory)
     {
         this.tetrominoFactory = tetrominoFactory;
-        updateRoundCoroutine = UpdateRound();
 
         base.Construct(roundDatas);
     }
@@ -41,6 +40,7 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
 
         SetNewRound();
         currentRound.StartRound();
+        updateRoundCoroutine = UpdateRound();
         StartCoroutine(updateRoundCoroutine);
     }
 
@@ -53,10 +53,9 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
         disposablesContainer.Add(currentRound.OnRoundEnd.Subscribe(_ =>
         {
             disposablesContainer.Clear();
+            currentIndex++;
             StartNewRound();
         }));
-
-        currentIndex++;
 
         currentFallPeriod = currentData.fallPeriod;
 

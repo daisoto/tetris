@@ -1,10 +1,10 @@
 ﻿public abstract class BlocksRotator: IBlocksRotator
 {
-    protected bool[,] grid = null;
+    protected IGridChecker gridChecker = null;
 
-    public BlocksRotator(bool[,] grid)
+    public BlocksRotator(IGridChecker gridChecker)
     {
-        this.grid = grid;
+        this.gridChecker = gridChecker;
     }
 
     public abstract void Rotate(Block[] blocks);

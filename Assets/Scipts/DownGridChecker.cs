@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class DownGridChecker : GridChecker
@@ -9,22 +11,40 @@ public class DownGridChecker : GridChecker
         return IsDownSpaceFree(position);
     }
 
-    public override bool IsRowColumnFilled(Vector2Int position, out Vector2Int[] positionsToClear)
+    public override int GetScoreFromFilled(Vector2Int[] insertedPositions, out Vector2Int[] positionsToClear)
     {
-        positionsToClear = new Vector2Int[position.x];
+        List<Vector2Int> positionsToClearList = new List<Vector2Int>();
 
-        for (int i = 0; i < grid.GetLength(0); i++)
+        int score = 0;
+
+        int[] yDistinctPositions = insertedPositions.Select(position => position.y).Distinct().ToArray();
+
+        foreach (int yPosition in yDistinctPositions)
         {
-            if (grid[position.x, i] == false)
-            {
-                positionsToClear = null;
+            bool isFilled = true;
+            List<Vector2Int> rowPositionsToClear = new List<Vector2Int>();
 
-                return false;
+            for (int xPosition = 0; xPosition < gridSize.x; xPosition++)
+            {
+                if (!grid[xPosition, yPosition])
+                {
+                    rowPositionsToClear.Clear();
+                    isFilled = false;
+                    break;
+                }
+
+                rowPositionsToClear.Add(new Vector2Int(xPosition, yPosition));
             }
 
-            positionsToClear[i] = new Vector2Int(position.x, i);
+            if (isFilled)
+            {
+                score++;
+                positionsToClearList.AddRange(rowPositionsToClear);
+            }
         }
 
-        return true;
+        positionsToClear = positionsToClearList.ToArray();
+
+        return score;
     }
 }

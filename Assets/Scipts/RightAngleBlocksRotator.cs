@@ -6,7 +6,7 @@ public class RightAngleBlocksRotator : BlocksRotator
 {
     private const double rightAngle = Math.PI / 2;
 
-    public RightAngleBlocksRotator(bool[,] grid) : base(grid) { }
+    public RightAngleBlocksRotator(IGridChecker gridChecker) : base(gridChecker) { }
 
     public override void Rotate(Block[] blocks)
     {
@@ -18,7 +18,7 @@ public class RightAngleBlocksRotator : BlocksRotator
         {
             Vector2Int newPosition = GetRotatedPosition(block.position.Value, axis);
 
-            if (!grid[newPosition.x, newPosition.x])
+            if (!gridChecker.IsFit(newPosition))
             {
                 return;
             }
@@ -71,6 +71,11 @@ public class RightAngleBlocksRotator : BlocksRotator
             }
         }
 
-        return new Vector2Int((xMax - xMin) / 2, (yMax - yMin) / 2);
+        float xAxis = (xMax + xMin) / 2.0f;
+        float yAxis = (yMax + yMin) / 2.0f;
+
+        return new Vector2Int(Misc.GetBankRounded(xAxis), Misc.GetBankRounded(yAxis));
     }
+
+    
 }

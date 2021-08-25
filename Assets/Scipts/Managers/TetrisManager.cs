@@ -3,11 +3,13 @@ using UniRx;
 
 public class TetrisManager: MonoBehaviour
 {
+    [SerializeField] private TetrisSettingsData tetrisSettingsData = null;
+
+    [Space(20)]
+
     [SerializeField] private RoundsManager roundsManager = null;
 
     [SerializeField] private BlockBehavioursGenerator blockBehavioursGenerator = null;
-
-    [SerializeField] private TetrisSettingsData tetrisSettingsData = null;
 
     [SerializeField] private InputManager inputManager = null;
 
@@ -68,8 +70,8 @@ public class TetrisManager: MonoBehaviour
         grid = new bool[tetrisSettingsData.gridSize.x, tetrisSettingsData.gridSize.y + tetrisSettingsData.GetMaxTetrominoSize().y];
 
         blocksMover = new DownBlocksMover(grid);
-        blocksRotator = new RightAngleBlocksRotator(grid);
         gridChecker = new DownGridChecker(grid);
+        blocksRotator = new RightAngleBlocksRotator(gridChecker);
 
         tetrisGrid = new TetrisGrid(grid, gridChecker, blocksMover, blocksRotator);
 
@@ -77,7 +79,7 @@ public class TetrisManager: MonoBehaviour
         blocksPool = new BlocksPool(blocksFactory);
         tetrominoFactory = new TetrominoFactory(tetrisSettingsData.initialPosition, tetrisGrid, blocksPool, tetrisSettingsData.tetrominoDatas);
 
-        blockBehavioursGenerator.Construct(blocksFactory, tetrisSettingsData.blockSize);
+        blockBehavioursGenerator.Construct(blocksFactory, tetrisSettingsData.gridSize);
 
         roundsManager.Construct(tetrisSettingsData.roundDatas, tetrominoFactory);
 

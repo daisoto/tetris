@@ -13,46 +13,32 @@ public abstract class GridChecker : IGridChecker
 
     public abstract bool IsDefaultSpaceFree(Vector2Int position);
 
-    public abstract bool IsRowColumnFilled(Vector2Int position, out Vector2Int[] positionsToClear);
+    public abstract int GetScoreFromFilled(Vector2Int[] insertedPositions, out Vector2Int[] positionsToClear);
 
     public virtual bool IsDownSpaceFree(Vector2Int position)
     {
         Vector2Int newPosition = new Vector2Int(position.x, position.y - 1);
 
-        if (!IsFit(newPosition))
-        {
-            return false;
-        }
-
-        return !grid[newPosition.x, newPosition.y];
+        return IsFit(newPosition);
     }
 
     public virtual bool IsLeftSpaceFree(Vector2Int position)
     {
         Vector2Int newPosition = new Vector2Int(position.x - 1, position.y);
 
-        if (!IsFit(newPosition))
-        {
-            return false;
-        }
-
-        return !grid[newPosition.x, newPosition.y];
+        return IsFit(newPosition);
     }
 
     public virtual bool IsRightSpaceFree(Vector2Int position)
     {
         Vector2Int newPosition = new Vector2Int(position.x + 1, position.y);
 
-        if (!IsFit(newPosition))
-        {
-            return false;
-        }
-
-        return !grid[newPosition.x, newPosition.y];
+        return IsFit(newPosition);
     }
 
-    private bool IsFit(Vector2Int position)
+    public bool IsFit(Vector2Int position)
     {
-        return (position.x < gridSize.x && position.y < gridSize.y && position.x > 0 && position.y > 0);
+        return (position.x < gridSize.x && position.y < gridSize.y && position.x >= 0 && position.y >= 0
+                && !grid[position.x, position.y]);
     }
 }

@@ -4,12 +4,17 @@ using UnityEngine;
 public class BlockBehavioursGenerator: ConstructableBehaviour<BlocksFactory>
 {
     [SerializeField] private BlockBehaviour blockBehaviourPrefab = null;
+    [SerializeField] private SpriteRenderer gridRenderer = null;
 
-    private Vector2Int blockSize = Vector2Int.one;
+    private Vector2 blockSize = default;
+    private Vector2 blockCenter = default;
+    private Vector2 zeroPosition = default;
 
-    public void Construct(BlocksFactory blocksFactory, Vector2Int blockSize)
+    public void Construct(BlocksFactory blocksFactory, Vector2Int gridSize)
     {
-        this.blockSize = blockSize;
+        blockSize = gridRenderer.bounds.size / new Vector2(gridSize.x, gridSize.y);
+        blockCenter = blockSize / 2;
+        zeroPosition = - gridRenderer.bounds.size / 2;
 
         Construct(blocksFactory);
     }
@@ -21,8 +26,7 @@ public class BlockBehavioursGenerator: ConstructableBehaviour<BlocksFactory>
             disposablesContainer.Add(model.OnBlockCreate.Subscribe(block =>
             {
                 BlockBehaviour blockBehaviour = Instantiate(blockBehaviourPrefab, transform);
-                blockBehaviour.transform.localScale = new Vector3(blockSize.x, blockSize.y, 1);
-                blockBehaviour.Construct(block);
+                blockBehaviour.Construct(block, blockSize, blockCenter, zeroPosition);
             }));
         }
     }

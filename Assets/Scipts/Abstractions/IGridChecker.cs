@@ -6,5 +6,8 @@ public interface IGridChecker
     bool IsDownSpaceFree(Vector2Int position);
     bool IsLeftSpaceFree(Vector2Int position);
     bool IsRightSpaceFree(Vector2Int position);
-    bool IsRowColumnFilled(Vector2Int position, out Vector2Int[] positionsToClear);
+
+    int GetScoreFromFilled(Vector2Int[] insertedPositions, out Vector2Int[] positionsToClear);
+
+    bool IsFit(Vector2Int position);
 }

@@ -9,6 +9,6 @@ public class DownBlocksMover : BlocksMover
 
     public override void MoveDefault(Block block)
     {
-        MoveLeft(block);
+        MoveDown(block);
     }
 }

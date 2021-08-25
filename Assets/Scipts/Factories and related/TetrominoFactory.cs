@@ -19,12 +19,12 @@ public class TetrominoFactory : IFactory<Tetromino>
         this.tetrominoDatas = tetrominoDatas;
         this.blocksPool = blocksPool;
         this.tetrisGrid = tetrisGrid;
-        this.initialPosition = initialPosition;
+        this.initialPosition = initialPosition - Vector2Int.one;
     }
 
     public Tetromino Create()
     {
-        TetrominoData tetrominoData = tetrominoDatas[TetrisRandom.random.Next(tetrominoDatas.Length)];
+        TetrominoData tetrominoData = tetrominoDatas[Random.Range(0, tetrominoDatas.Length)];
 
         List<Block> blocks = new List<Block>();
 
@@ -44,7 +44,9 @@ public class TetrominoFactory : IFactory<Tetromino>
 
     private void SetBlocksPosition(TetrominoData tetrominoData, Block[] blocks)
     {
-        Vector2Int axis = initialPosition + new Vector2Int(tetrominoData.size.x / 2, 0);
+        int xCenter = Misc.GetBankRounded(tetrominoData.size.x / 2f);
+
+        Vector2Int axis = initialPosition + new Vector2Int(xCenter, 0);
 
         int blockIndex = 0;
 

@@ -27,8 +27,6 @@ public class TetrisSettingsData : ScriptableObject
 
     public float inputUpdateTime { get => _inputUpdateTime; }
 
-    public Vector2Int blockSize { get => _blockSize; }
-
     public TetrominoData[] tetrominoDatas { get => _tetrominoDatas; }
 
     public RoundData[] roundDatas { get => _roundDatas; }
@@ -40,8 +38,6 @@ public class TetrisSettingsData : ScriptableObject
     [SerializeField] private Vector2Int _gridSize = new Vector2Int(10, 20);
 
     [SerializeField] private Vector2Int _initialPosition = new Vector2Int(5, 20);
-
-    [SerializeField] private Vector2Int _blockSize = new Vector2Int(1, 1);
 
     [SerializeField] private float _inputUpdateTime = 0.1f;
 

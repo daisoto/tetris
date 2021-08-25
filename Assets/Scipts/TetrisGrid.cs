@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
+using System.Linq;
+using UnityEngine.UIElements;
+using System;
 
 public class TetrisGrid
 {
@@ -44,7 +47,7 @@ public class TetrisGrid
         blocksRotator.Rotate(blocks);
     }
 
-    public void DefaultMove(Block[] blocks)
+    public void MoveDefault(Block[] blocks)
     {
         foreach (Block block in blocks)
         {
@@ -75,7 +78,7 @@ public class TetrisGrid
     {
         foreach (Block block in blocks)
         {
-            if (!gridChecker.IsDownSpaceFree(block.position.Value))
+            if (!gridChecker.IsRightSpaceFree(block.position.Value))
             {
                 return;
             }
@@ -104,29 +107,21 @@ public class TetrisGrid
             block.isStuck.Value = true;
             Vector2Int position = block.position.Value;
             positionStuckBlocks.Add(position, block);
+
             grid[position.x, position.y] = true;
         }
 
         OnInsert.Execute(blocks);
     }    
 
-    private void ProcessInsertedBlocks(IEnumerable<Block> blocks)
+    private void ProcessInsertedBlocks(Block[] blocks)
     {
-        int rawScore = 0;
-        List<Vector2Int> positionsToClear = new List<Vector2Int>();
-
-        foreach (Block block in blocks)
-        {
-            if (gridChecker.IsRowColumnFilled(block.position.Value, out Vector2Int[] newPositionsToClear))
-            {
-                positionsToClear.AddRange(newPositionsToClear);
-                rawScore++;
-            }
-        }
+        Vector2Int[] blocksPositios = blocks.Select(x => x.position.Value).ToArray();
+        int rawScore = gridChecker.GetScoreFromFilled(blocksPositios, out Vector2Int[] positionsToClear);
 
         if (rawScore > 0)
         {
-            ClearBlocks(positionsToClear.ToArray());
+            ClearBlocks(positionsToClear);
             ProcessAfterCleaning();
 
             OnBlocksClear.Execute(rawScore);
@@ -145,12 +140,30 @@ public class TetrisGrid
 
     private void ProcessAfterCleaning()
     {
-        foreach (Vector2Int position in positionStuckBlocks.Keys)
+        Block[] stuckBlocks = positionStuckBlocks.Values.OrderBy(block => block.position.Value.y).ToArray();
+
+        for (int i = 0; i < stuckBlocks.Length; i++)
         {
-            if (gridChecker.IsDefaultSpaceFree(position))
-            {
-                blocksMover.MoveDefault(positionStuckBlocks[position]);
-            }
+            Block block = stuckBlocks[i];
+
+            positionStuckBlocks.Remove(block.position.Value);
+            grid[block.position.Value.x, block.position.Value.y] = false;
+
+            Fall(block);
         }
+    }
+
+    private void Fall(Block block)
+    {
+        if (!gridChecker.IsDefaultSpaceFree(block.position.Value))
+        {
+            Insert(new Block[] { block });
+
+            return;
+        }
+
+        blocksMover.MoveDefault(block);
+
+        Fall(block);
     }
 }

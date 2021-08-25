@@ -1,3 +1,4 @@
+using System;
 using UniRx;
 
 public class Tetromino: ITickable
@@ -19,6 +20,8 @@ public class Tetromino: ITickable
             {
                 if (isStuck)
                 {
+                    Array.ForEach(blocks, block => block.isStuck.Value = true);
+                    
                     this.isStuck.Value = true;
                 }
             });
@@ -29,7 +32,7 @@ public class Tetromino: ITickable
     {
         if (!isStuck.Value)
         {
-            tetrisGrid.DefaultMove(blocks);
+            tetrisGrid.MoveDefault(blocks);
         }
     }
 
