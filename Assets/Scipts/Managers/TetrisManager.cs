@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UniRx;
-using System.Collections;
 
 public class TetrisManager: MonoBehaviour
 {
@@ -9,6 +8,8 @@ public class TetrisManager: MonoBehaviour
     [SerializeField] private BlockBehavioursGenerator blockBehavioursGenerator = null;
 
     [SerializeField] private TetrisSettingsData tetrisSettingsData = null;
+
+    [SerializeField] private InputManager inputManager = null;
 
     private ScoreManager scoreManager = null;
 
@@ -28,9 +29,6 @@ public class TetrisManager: MonoBehaviour
 
     private DisposablesContainer inputDisposablesContainer = new DisposablesContainer();
 
-    private InputManager inputManager = null;
-    private IEnumerator inputCoroutine = null;
-
     private void Awake()
     {
         Install();
@@ -38,7 +36,7 @@ public class TetrisManager: MonoBehaviour
 
     private void Start()
     {
-        inputManager.SetActive(true);
+        inputManager.isActive.Value = true;
 
         roundsManager.StartNewRound();
     }
@@ -57,15 +55,11 @@ public class TetrisManager: MonoBehaviour
         }));
 
         BindInputManager();
-
-        StartCoroutine(inputCoroutine);
     }
 
     private void OnDisable()
     {
         disposablesContainer.Clear();
-
-        StopCoroutine(inputCoroutine);
     }
 
     private void Install()
@@ -84,11 +78,10 @@ public class TetrisManager: MonoBehaviour
         tetrominoFactory = new TetrominoFactory(tetrisSettingsData.initialPosition, tetrisGrid, blocksPool, tetrisSettingsData.tetrominoDatas);
 
         blockBehavioursGenerator.Construct(blocksFactory, tetrisSettingsData.blockSize);
+
         roundsManager.Construct(tetrisSettingsData.roundDatas, tetrominoFactory);
 
-        inputManager = new InputManager();
-
-        inputCoroutine = ProcessInput();
+        inputManager.Construct(tetrisSettingsData.inputUpdateTime);
     }
 
     private void BindInputManager()
@@ -123,19 +116,5 @@ public class TetrisManager: MonoBehaviour
                 }
             }));
         }));
-    }
-
-    private IEnumerator ProcessInput()
-    {
-        while (true)
-        {
-            inputManager.Tick();
-            yield return new WaitForSeconds(tetrisSettingsData.inputUpdateTime);
-        }
-    }
-
-    private IEnumerator UpdateTetromino()
-    {
-        
     }
 }

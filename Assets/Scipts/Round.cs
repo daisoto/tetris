@@ -1,10 +1,10 @@
 ﻿using UniRx;
-using System.Collections;
-using UnityEngine;
 
-public class Round : ConstructableBehaviour<RoundData>
+public class Round: ITickable
 {
     public ReactiveCommand OnRoundEnd = new ReactiveCommand();
+
+    private RoundData roundData = null;
 
     private IFactory<Tetromino> tetrominoFactory = null;
 
@@ -12,14 +12,17 @@ public class Round : ConstructableBehaviour<RoundData>
 
     private int tetrominoCounter = 0;
 
-    private IEnumerator coroutine = null;
+    private DisposablesContainer disposablesContainer = new DisposablesContainer();
 
-    public void Construct(RoundData roundData, IFactory<Tetromino> tetrominoFactory)
+    public Round(RoundData roundData, IFactory<Tetromino> tetrominoFactory)
     {
+        this.roundData = roundData;
         this.tetrominoFactory = tetrominoFactory;
-        coroutine = UpdateTick();
+    }
 
-        Construct(roundData);
+    public void Tick()
+    {
+        currentTetromino?.Tick();
     }
 
     public void StartRound()
@@ -28,17 +31,10 @@ public class Round : ConstructableBehaviour<RoundData>
         ContinueRound();
     }
 
-    public void PauseRound()
-    {
-        StopCoroutine(coroutine);
-    }
-
     public void ContinueRound()
     {
-        if (tetrominoCounter > model.tetrominosInRound)
+        if (tetrominoCounter > roundData.tetrominosInRound)
         {
-            StopCoroutine(coroutine);
-
             OnRoundEnd.Execute();
 
             return;
@@ -49,8 +45,6 @@ public class Round : ConstructableBehaviour<RoundData>
             disposablesContainer.Clear();
             SetCurrentTetramino();
         }
-
-        StartCoroutine(coroutine);
     }
 
     private void SetCurrentTetramino()
@@ -66,14 +60,5 @@ public class Round : ConstructableBehaviour<RoundData>
                 ContinueRound();
             }
         }));
-    }
-
-    private IEnumerator UpdateTick()
-    {
-        while (true)
-        {
-            currentTetromino?.Tick();
-            yield return new WaitForSeconds(model.fallPeriod);
-        }
     }
 }
