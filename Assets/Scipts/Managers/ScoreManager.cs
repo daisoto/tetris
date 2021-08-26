@@ -15,7 +15,31 @@ public class ScoreManager
 
     public ScoreManager()
     {
-        scoreFunc = x => (int)Math.Pow(x, 2);
+        scoreFunc = x => // default tetris scoring
+        {
+            if (x < 1)
+            {
+                return 0;
+            }
+            if (x == 1)
+            {
+                return 100;
+            }
+            if (x == 2)
+            {
+                return 300;
+            }
+            if (x == 3)
+            {
+                return 700;
+            }
+            if (x == 4)
+            {
+                return 1500;
+            }
+
+            return 2000;
+        };
 
         disposablesContainer.Add(scoreEvents.ObserveAdd().Subscribe(addEvent =>
         {
