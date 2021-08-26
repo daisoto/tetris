@@ -1,7 +1,4 @@
-﻿using System;
-
-public interface IScoreEvent
+﻿public interface IScoreEvent
 {        
-    DateTime timeRaised { get; }
-    int nuOfClearedRowsColumns { get; }
+    int rawScore { get; }
 }

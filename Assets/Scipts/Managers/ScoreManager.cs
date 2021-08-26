@@ -5,8 +5,6 @@ public class ScoreManager
 {
     public ReactiveProperty<int> currentScore = new ReactiveProperty<int>();
 
-    public ReactiveProperty<DateTime> lastScoreTime = new ReactiveProperty<DateTime>();
-
     private ReactiveCollection<IScoreEvent> scoreEvents = new ReactiveCollection<IScoreEvent>();
 
     private DisposablesContainer disposablesContainer = new DisposablesContainer();
@@ -41,10 +39,9 @@ public class ScoreManager
             return 2000;
         };
 
-        disposablesContainer.Add(scoreEvents.ObserveAdd().Subscribe(addEvent =>
+        disposablesContainer.Add(scoreEvents.ObserveAdd().Subscribe(addedEvent =>
         {
-            currentScore.Value = scoreFunc(addEvent.Value.nuOfClearedRowsColumns);
-            lastScoreTime.Value = addEvent.Value.timeRaised;
+            currentScore.Value += scoreFunc(addedEvent.Value.rawScore);
         }));
     }
 
@@ -54,8 +51,7 @@ public class ScoreManager
 
         disposablesContainer.Add(scoreEvents.ObserveAdd().Subscribe(addEvent =>
         {
-            currentScore.Value = this.scoreFunc(addEvent.Value.nuOfClearedRowsColumns);
-            lastScoreTime.Value = addEvent.Value.timeRaised;
+            currentScore.Value = this.scoreFunc(addEvent.Value.rawScore);
         }));
     }
 

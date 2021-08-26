@@ -1,14 +1,9 @@
-﻿using System;
-
-public class ScoreEvent : IScoreEvent
+﻿public class ScoreEvent : IScoreEvent
 {
-    public DateTime timeRaised { get; private set; }
+    public int rawScore { get; private set; }
 
-    public int nuOfClearedRowsColumns { get; private set; }
-
-    public ScoreEvent(int nuOfClearedRowsColumns)
+    public ScoreEvent(int rawScore)
     {
-        this.nuOfClearedRowsColumns = nuOfClearedRowsColumns;
-        timeRaised = DateTime.Now;
+        this.rawScore = rawScore;
     }
 }
