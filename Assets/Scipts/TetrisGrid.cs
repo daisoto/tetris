@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
 using System.Linq;
-using UnityEngine.UIElements;
-using System;
 
 public class TetrisGrid
 {
@@ -18,18 +16,22 @@ public class TetrisGrid
 
     private IBlocksRotator blocksRotator = null;
 
+    private IGridCleanProcessor gridCleanProcessor = null;
+
     private Dictionary<Vector2Int, Block> positionStuckBlocks = new Dictionary<Vector2Int, Block>();
 
     private DisposablesContainer disposablesContainer = new DisposablesContainer();
 
     private List<Block> movingBlocks = new List<Block>();
 
-    public TetrisGrid(bool[,] grid, IGridChecker gridChecker, IBlocksMover blocksMover, IBlocksRotator blocksRotator)
+    public TetrisGrid(bool[,] grid)
     {
         this.grid = grid;
-        this.gridChecker = gridChecker;
-        this.blocksMover = blocksMover;
-        this.blocksRotator = blocksRotator;
+
+        gridChecker = new DownGridChecker(grid);
+        blocksMover = new DownBlocksMover(grid);
+        blocksRotator = new RightAngleBlocksRotator(gridChecker);
+        gridCleanProcessor = new DownGridCleanerProcessor(grid, gridChecker, blocksMover);
 
         disposablesContainer.Add(OnInsert.Subscribe(blocks =>
         {
@@ -122,7 +124,7 @@ public class TetrisGrid
         if (rawScore > 0)
         {
             ClearBlocks(positionsToClear);
-            ProcessAfterCleaning();
+            gridCleanProcessor.ProcessAfterCleaning(positionStuckBlocks, positionsToClear);
 
             OnBlocksClear.Execute(rawScore);
         }
@@ -136,34 +138,5 @@ public class TetrisGrid
             positionStuckBlocks.Remove(positionToClear);
             grid[positionToClear.x, positionToClear.y] = false;
         }        
-    }
-
-    private void ProcessAfterCleaning()
-    {
-        Block[] stuckBlocks = positionStuckBlocks.Values.OrderBy(block => block.position.Value.y).ToArray();
-
-        for (int i = 0; i < stuckBlocks.Length; i++)
-        {
-            Block block = stuckBlocks[i];
-
-            positionStuckBlocks.Remove(block.position.Value);
-            grid[block.position.Value.x, block.position.Value.y] = false;
-
-            Fall(block);
-        }
-    }
-
-    private void Fall(Block block)
-    {
-        if (!gridChecker.IsDefaultSpaceFree(block.position.Value))
-        {
-            Insert(new Block[] { block });
-
-            return;
-        }
-
-        blocksMover.MoveDefault(block);
-
-        Fall(block);
     }
 }

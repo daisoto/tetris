@@ -17,10 +17,6 @@ public class TetrisManager: MonoBehaviour
 
     private bool[,] grid = null;
 
-    private IBlocksMover blocksMover = null;
-    private IBlocksRotator blocksRotator = null;
-    private IGridChecker gridChecker = null;
-
     private TetrisGrid tetrisGrid = null;
 
     private TetrominoFactory tetrominoFactory = null;
@@ -69,11 +65,7 @@ public class TetrisManager: MonoBehaviour
         scoreManager = new ScoreManager();
         grid = new bool[tetrisSettingsData.gridSize.x, tetrisSettingsData.gridSize.y + tetrisSettingsData.GetMaxTetrominoSize().y];
 
-        blocksMover = new DownBlocksMover(grid);
-        gridChecker = new DownGridChecker(grid);
-        blocksRotator = new RightAngleBlocksRotator(gridChecker);
-
-        tetrisGrid = new TetrisGrid(grid, gridChecker, blocksMover, blocksRotator);
+        tetrisGrid = new TetrisGrid(grid);
 
         blocksFactory = new BlocksFactory(tetrisSettingsData.roundDatas[0].blockData);
         blocksPool = new BlocksPool(blocksFactory);
