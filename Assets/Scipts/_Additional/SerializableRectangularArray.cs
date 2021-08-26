@@ -22,6 +22,21 @@ public class SerializableRectangularArray<T>
         return new SerializableRectangularArray<T>(rawArray);
     }
 
+    public static implicit operator T[,](SerializableRectangularArray<T> serializableRectangularArray)
+    {
+        T[,] value = new T[serializableRectangularArray.size.x, serializableRectangularArray.size.y];
+
+        for (int i = 0; i < serializableRectangularArray.size.x; i++)
+        {
+            for (int j = 0; j < serializableRectangularArray.size.y; j++)
+            {
+                value[i, j] = serializableRectangularArray[i, j];
+            }
+        }
+
+        return value;
+    }
+
     public SerializableRectangularArray()
     {
         _size = Vector2Int.zero;

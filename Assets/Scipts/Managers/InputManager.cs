@@ -4,10 +4,8 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputManager : MonoBehaviour, IConstructable<float>
+public class InputManager : ConstructableBehaviour<float>
 {
-    public bool isConstructed { get; private set; }
-
     public ReactiveCommand onDownPressed = new ReactiveCommand();
     public ReactiveCommand onLeftPressed = new ReactiveCommand();
     public ReactiveCommand onRightPressed = new ReactiveCommand();
@@ -24,46 +22,19 @@ public class InputManager : MonoBehaviour, IConstructable<float>
 
     private IEnumerator inputCoroutine = null;
 
-    private float updateTime = default;
-
     private IDisposable isActiveSubscription = null;
 
-    public void Construct(float updateTime)
+    public override void Construct(float updateTime)
     {
         playerControls = new PlayerControls();
-        this.updateTime = updateTime;
         inputCoroutine = UpdateInput();
 
+        model = updateTime;
+
         isConstructed = true;
-
-        OnEnable();
     }
 
-    private void OnEnable()
-    {
-        if (isConstructed)
-        {
-            Subscribe();
-        }
-    }
-
-    private void OnDisable()
-    {
-        if (isConstructed)
-        {
-            playerControls.Keyboard.Movement.started -= ctx => ProcessMovementInput(ctx);
-            playerControls.Keyboard.Movement.canceled -= ctx => StopMovement();
-
-            playerControls.Keyboard.Rotation.started -= ctx => { isRotatePressed = true; };
-            playerControls.Keyboard.Rotation.canceled -= ctx => { isRotatePressed = false; };
-
-            StopCoroutine(inputCoroutine);
-
-            isActiveSubscription.Dispose();
-        }
-    }
-
-    private void Subscribe()
+    protected override void Subscribe()
     {
         playerControls.Keyboard.Movement.started += ctx => ProcessMovementInput(ctx);
         playerControls.Keyboard.Movement.canceled += ctx => StopMovement();
@@ -86,16 +57,17 @@ public class InputManager : MonoBehaviour, IConstructable<float>
         });
     }
 
-    public void SetActive(bool flag)
+    protected override void Unsubscribe()
     {
-        if (flag)
-        {
-            playerControls?.Enable();
-        }
-        else
-        {
-            playerControls?.Disable();
-        }
+        playerControls.Keyboard.Movement.started -= ctx => ProcessMovementInput(ctx);
+        playerControls.Keyboard.Movement.canceled -= ctx => StopMovement();
+
+        playerControls.Keyboard.Rotation.started -= ctx => { isRotatePressed = true; };
+        playerControls.Keyboard.Rotation.canceled -= ctx => { isRotatePressed = false; };
+
+        StopCoroutine(inputCoroutine);
+
+        isActiveSubscription.Dispose();
     }
 
     private void ProcessMovementInput(InputAction.CallbackContext ctx)
@@ -150,7 +122,7 @@ public class InputManager : MonoBehaviour, IConstructable<float>
                 onRotatePressed?.Execute();
             }
 
-            yield return new WaitForSeconds(updateTime);
+            yield return new WaitForSeconds(model);
         }
     }
 }

@@ -1,11 +1,8 @@
-﻿using UniRx;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class TetrominoFactory : IFactory<Tetromino>
 {
-    public ReactiveCommand<Tetromino> OnTetrominoCreated = new ReactiveCommand<Tetromino>();
-
     private TetrominoData[] tetrominoDatas = null;
 
     private Vector2Int initialPosition = default;
@@ -35,9 +32,7 @@ public class TetrominoFactory : IFactory<Tetromino>
 
         SetBlocksPosition(tetrominoData, blocks.ToArray());
 
-        Tetromino tetromino = new Tetromino(tetrisGrid, blocks.ToArray());
-
-        OnTetrominoCreated.Execute(tetromino);
+        Tetromino tetromino = new Tetromino(tetrisGrid, blocks.ToArray(), tetrominoData.shape);
 
         return tetromino;
     }

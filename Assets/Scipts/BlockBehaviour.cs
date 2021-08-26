@@ -26,53 +26,50 @@ public class BlockBehaviour : ConstructableBehaviour<Block>
         base.Construct(block);
     }
 
-    protected override void OnEnable()
+    protected override void Subscribe()
     {
-        if (isConstructed)
+        disposablesContainer.Add(model.position.Subscribe(position =>
         {
-            disposablesContainer.Add(model.position.Subscribe(position =>
-            {
-                transform.localPosition = GetBlockCoord(position);
-            }));
+            transform.localPosition = GetBlockCoord(position);
+        }));
 
-            disposablesContainer.Add(model.color.Subscribe(color =>
-            {
-                spriteRenderer.color = color;
-            }));
+        disposablesContainer.Add(model.color.Subscribe(color =>
+        {
+            spriteRenderer.color = color;
+        }));
 
-            disposablesContainer.Add(model.sprite.Subscribe(sprite =>
-            {
-                spriteRenderer.sprite = sprite;
-            }));
+        disposablesContainer.Add(model.sprite.Subscribe(sprite =>
+        {
+            spriteRenderer.sprite = sprite;
+        }));
 
-            disposablesContainer.Add(model.isStuck.Subscribe(isStuck =>
+        disposablesContainer.Add(model.isStuck.Subscribe(isStuck =>
+        {
+            if (isStuck)
             {
-                if (isStuck)
+                if (transform != null)
                 {
-                    if (transform != null)
+                    transform.DOScale(1.1f, fadeDuration / 2).OnComplete(() =>
                     {
-                        transform.DOScale(1.1f, fadeDuration / 2).OnComplete(() =>
+                        if (transform != null)
                         {
-                            if (transform != null)
-                            {
-                                transform.DOScale(1, fadeDuration / 2);
-                            }
-                        });
-                    }
-                }
-            }));
-
-            disposablesContainer.Add(model.isAlive.Subscribe(isAlive =>
-            {
-                if (!isAlive)
-                {
-                    spriteRenderer?.DOFade(0, fadeDuration).OnComplete(() =>
-                    {
-                        Destroy(gameObject);
+                            transform.DOScale(1, fadeDuration / 2);
+                        }
                     });
                 }
-            }));
-        }
+            }
+        }));
+
+        disposablesContainer.Add(model.isAlive.Subscribe(isAlive =>
+        {
+            if (!isAlive)
+            {
+                spriteRenderer?.DOFade(0, fadeDuration).OnComplete(() =>
+                {
+                    Destroy(gameObject);
+                });
+            }
+        }));
     }
 
     private Vector2 GetBlockCoord(Vector2Int gridPosition)

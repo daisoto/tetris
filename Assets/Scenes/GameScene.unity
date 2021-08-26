@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a2e1c8f25630914887e5ad438973354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roundsManager: {fileID: 2063849317}
   blockBehaviourPrefab: {fileID: 465882824010807436, guid: e7bb2a151a7bdea4aa92a69ea19e44c3, type: 3}
   gridRenderer: {fileID: 1172038244}
 --- !u!4 &109378197
@@ -280,9 +281,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 535c439048e691248abdce47ca091efe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tetrisSettingsData: {fileID: 11400000, guid: 5782f007420626446bdf6150c25c49be, type: 2}
   roundsManager: {fileID: 2063849317}
   blockBehavioursGenerator: {fileID: 109378196}
-  tetrisSettingsData: {fileID: 11400000, guid: 5782f007420626446bdf6150c25c49be, type: 2}
   inputManager: {fileID: 1650608665}
 --- !u!4 &691337415
 Transform:

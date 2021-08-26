@@ -1,14 +1,15 @@
-﻿using UniRx;
-
-public class BlocksFactory : IFactory<Block>
+﻿public class BlocksFactory : IFactory<Block>
 {
-    public ReactiveCommand<Block> OnBlockCreate = new ReactiveCommand<Block>();
-
     private BlockData blockData = null;
+
+    public BlocksFactory(BlockData blockData)
+    {
+        this.blockData = blockData;
+    }
 
     public Block Create()
     {
-        Block block = null;
+        Block block;
 
         if (blockData != null)
         {
@@ -18,8 +19,6 @@ public class BlocksFactory : IFactory<Block>
         {
             block = new Block();
         }
-
-        OnBlockCreate.Execute(block);
 
         return block;
     }

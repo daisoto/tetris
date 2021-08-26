@@ -40,7 +40,7 @@ public class TetrisManager: MonoBehaviour
     {
         inputManager.isActive.Value = true;
 
-        roundsManager.StartNewRound();
+        roundsManager.TryStartNewRound();
     }
 
     private void OnEnable()
@@ -50,10 +50,10 @@ public class TetrisManager: MonoBehaviour
             scoreManager?.SendScore(rawScore);
         }));
 
-        disposablesContainer.Add(roundsManager.OnRoundSet.Subscribe(roundData =>
+        disposablesContainer.Add(roundsManager.OnBlockDataSet.Subscribe(blockData =>
         {
             blocksPool?.Clear();
-            blocksFactory?.SetBlockData(roundData.blockData);
+            blocksFactory?.SetBlockData(blockData);
         }));
 
         BindInputManager();
@@ -75,11 +75,11 @@ public class TetrisManager: MonoBehaviour
 
         tetrisGrid = new TetrisGrid(grid, gridChecker, blocksMover, blocksRotator);
 
-        blocksFactory = new BlocksFactory();
+        blocksFactory = new BlocksFactory(tetrisSettingsData.roundDatas[0].blockData);
         blocksPool = new BlocksPool(blocksFactory);
         tetrominoFactory = new TetrominoFactory(tetrisSettingsData.initialPosition, tetrisGrid, blocksPool, tetrisSettingsData.tetrominoDatas);
 
-        blockBehavioursGenerator.Construct(blocksFactory, tetrisSettingsData.gridSize);
+        blockBehavioursGenerator.Construct(tetrisSettingsData.gridSize);
 
         roundsManager.Construct(tetrisSettingsData.roundDatas, tetrominoFactory);
 
@@ -88,7 +88,7 @@ public class TetrisManager: MonoBehaviour
 
     private void BindInputManager()
     {
-        disposablesContainer.Add(tetrominoFactory.OnTetrominoCreated.Subscribe(tetromino =>
+        disposablesContainer.Add(roundsManager.currentTetromino.Subscribe(tetromino =>
         {
             inputDisposablesContainer.Add(inputManager.onDownPressed.Subscribe(_ =>
             {
@@ -110,7 +110,7 @@ public class TetrisManager: MonoBehaviour
                 tetromino?.Rotate();
             }));
 
-            inputDisposablesContainer.Add(tetromino.isStuck.Subscribe(isStuck =>
+            inputDisposablesContainer.Add(tetromino?.isStuck.Subscribe(isStuck =>
             {
                 if (isStuck)
                 {

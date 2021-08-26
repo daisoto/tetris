@@ -1,64 +1,76 @@
 ﻿using UniRx;
 
-public class Round: ITickable
+public class Round : ITickable
 {
-    public ReactiveCommand OnRoundEnd = new ReactiveCommand();
+	public ReactiveCommand OnRoundEnd = new ReactiveCommand();
 
-    private RoundData roundData = null;
+	public float fallPeriod { get; private set; }
 
-    private IFactory<Tetromino> tetrominoFactory = null;
+	public ReactiveProperty<Tetromino> currentTetromino = new ReactiveProperty<Tetromino>();
 
-    private Tetromino currentTetromino = null;
+	public ReactiveProperty<Tetromino> nextTetromino = new ReactiveProperty<Tetromino>();
 
-    private int tetrominoCounter = 0;
+	private IFactory<Tetromino> tetrominoFactory = null;
 
-    private DisposablesContainer disposablesContainer = new DisposablesContainer();
+	private int currentTetrominoNum = 1;
 
-    public Round(RoundData roundData, IFactory<Tetromino> tetrominoFactory)
+	private int tetrominosInRound = 0;
+
+	private bool isLastTetromino { get { return currentTetrominoNum == tetrominosInRound; } }
+
+	private bool isFirstTetromino { get { return currentTetrominoNum == 1; } }
+
+	private DisposablesContainer disposablesContainer = new DisposablesContainer();
+
+	public Round(RoundData roundData, IFactory<Tetromino> tetrominoFactory)
+	{
+		tetrominosInRound = roundData.tetrominosInRound;
+		fallPeriod = roundData.fallPeriod;
+		this.tetrominoFactory = tetrominoFactory;
+	}
+
+	public void Tick()
+	{
+		currentTetromino.Value?.Tick();
+	}
+
+	public void StartRound()
+	{
+		SetTetraminos();
+		SubscribeOnStuck();
+	}
+
+	public void ContinueRound()
+	{
+		if (currentTetrominoNum > tetrominosInRound)
+		{
+			OnRoundEnd.Execute();
+
+			return;
+		}
+
+		disposablesContainer.Clear();
+
+		SetTetraminos();
+
+		SubscribeOnStuck();
+	}
+
+	private void SetTetraminos()
+	{
+		currentTetromino.Value = isFirstTetromino ? tetrominoFactory?.Create() : nextTetromino.Value;
+		nextTetromino.Value = isLastTetromino ? null : tetrominoFactory?.Create();		
+	}
+
+	private void SubscribeOnStuck()
     {
-        this.roundData = roundData;
-        this.tetrominoFactory = tetrominoFactory;
-    }
-
-    public void Tick()
-    {
-        currentTetromino?.Tick();
-    }
-
-    public void StartRound()
-    {
-        tetrominoCounter = 0;
-        ContinueRound();
-    }
-
-    public void ContinueRound()
-    {
-        if (tetrominoCounter > roundData.tetrominosInRound)
-        {
-            OnRoundEnd.Execute();
-
-            return;
-        }
-
-        if (currentTetromino == null)
-        {
-            disposablesContainer.Clear();
-            SetCurrentTetramino();
-        }
-    }
-
-    private void SetCurrentTetramino()
-    {
-        currentTetromino = tetrominoFactory?.Create();
-
-        disposablesContainer.Add(currentTetromino.isStuck.Subscribe(isStuck =>
-        {
-            if (isStuck)
-            {
-                currentTetromino = null;
-                tetrominoCounter++;
-                ContinueRound();
-            }
-        }));
-    }
+		disposablesContainer.Add(currentTetromino.Value.isStuck.Subscribe(isStuck =>
+		{
+			if (isStuck)
+			{
+				currentTetrominoNum++;
+				ContinueRound();
+			}
+		}));
+	}
 }

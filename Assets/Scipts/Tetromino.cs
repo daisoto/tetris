@@ -7,16 +7,21 @@ public class Tetromino: ITickable
 
     public Block[] blocks { get; private set; }
 
+    public bool[,] shape { get; private set; }
+
     private TetrisGrid tetrisGrid = null;
 
-    public Tetromino(TetrisGrid tetrisGrid, Block[] blocks)
+    private DisposablesContainer disposablesContainer = new DisposablesContainer();
+
+    public Tetromino(TetrisGrid tetrisGrid, Block[] blocks, bool[,] shape)
     {
         this.tetrisGrid = tetrisGrid;
         this.blocks = blocks;
+        this.shape = shape;
 
         foreach (Block block in blocks)
         {
-            block.isStuck.Subscribe(isStuck =>
+            disposablesContainer.Add(block.isStuck.Subscribe(isStuck =>
             {
                 if (isStuck)
                 {
@@ -24,7 +29,7 @@ public class Tetromino: ITickable
                     
                     this.isStuck.Value = true;
                 }
-            });
+            }));
         }
     }
 

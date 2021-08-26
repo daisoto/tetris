@@ -17,7 +17,7 @@ public class DisposablesContainer
 
     public void Clear()
     {
-        disposables.ForEach(disposable => disposable.Dispose());
+        disposables.ForEach(disposable => disposable?.Dispose());
         disposables.Clear();
     }
 }
