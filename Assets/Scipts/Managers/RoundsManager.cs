@@ -6,7 +6,6 @@ using UnityEngine;
 public class RoundsManager : ConstructableBehaviour<RoundData[]>
 {
     public ReactiveCommand OnRoundsFinish = new ReactiveCommand();
-    public ReactiveCommand OnGameOver = new ReactiveCommand(); // TODO : инвокать
 
     public ReactiveCommand<BlockData> OnBlockDataSet = new ReactiveCommand<BlockData>();
 
@@ -37,6 +36,14 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
         isConstructed = true;
     }
 
+    public void StopRound()
+    {
+        if (updateRoundCoroutine != null)
+        {
+            StopCoroutine(updateRoundCoroutine);
+        }
+    }
+
     protected override void Subscribe()
     {
         disposablesContainer.Add(currentRound?.OnRoundEnd.Subscribe(_ =>
@@ -58,10 +65,7 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
 
     public bool TryStartNewRound()
     {
-        if (updateRoundCoroutine != null)
-        {
-            StopCoroutine(updateRoundCoroutine);
-        }
+        StopRound();
 
         if (rounds.Count < 1)
         {

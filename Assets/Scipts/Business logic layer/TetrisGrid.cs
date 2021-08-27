@@ -5,7 +5,10 @@ using System.Linq;
 
 public class TetrisGrid
 {
+    public ReactiveCommand onGameOver = new ReactiveCommand();
+
     public ReactiveCommand<int> OnBlocksClear = new ReactiveCommand<int>();
+    
     public ReactiveCommand<Block[]> OnInsert = new ReactiveCommand<Block[]>();
 
     private bool[,] grid = null;
@@ -108,13 +111,33 @@ public class TetrisGrid
         {
             block.isStuck.Value = true;
             Vector2Int position = block.position.Value;
+
+            if (positionStuckBlocks.ContainsKey(position))
+            {
+                ClearStuck();
+                onGameOver.Execute();
+
+                return;
+            }
+
             positionStuckBlocks.Add(position, block);
 
             grid[position.x, position.y] = true;
         }
 
         OnInsert.Execute(blocks);
-    }    
+    }
+
+    private void ClearStuck()
+    {
+        foreach (KeyValuePair<Vector2Int, Block> positionStuckBlock in positionStuckBlocks)
+        {
+            Vector2Int position = positionStuckBlock.Key;
+            grid[position.x, position.y] = false;
+            positionStuckBlock.Value.isAlive.Value = false;
+            positionStuckBlocks.Remove(position);
+        }
+    }
 
     private void ProcessInsertedBlocks(Block[] blocks)
     {

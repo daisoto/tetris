@@ -58,6 +58,12 @@ public class TetrisManager: MonoBehaviour
             blocksFactory?.SetBlockData(blockData);
         }));
 
+        disposablesContainer.Add(tetrisGrid.onGameOver.Subscribe(_ =>
+        {
+            roundsManager.StopRound();
+            blocksPool.Clear();
+        }));
+
         BindInputManager();
     }
 
