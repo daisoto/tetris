@@ -3,6 +3,8 @@ using System;
 
 public class DisposablesContainer
 {
+    public int size => disposables.Count;
+
     private List<IDisposable> disposables = new List<IDisposable>();
 
     ~DisposablesContainer()

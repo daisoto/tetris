@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -27,6 +28,7 @@ public class DownGridCleanerProcessor : IGridCleanProcessor
         for (int i = 0; i < interationsNum; i++)
         {
             int[] yPositionsStuck = positionStuckBlocks.Keys.Select(position => position.y).Where(y => y > yCleanMax).ToArray();
+            Array.Sort(yPositionsStuck);
 
             foreach (int y in yPositionsStuck)
             {

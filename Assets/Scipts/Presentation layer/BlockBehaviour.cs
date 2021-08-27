@@ -30,7 +30,7 @@ public class BlockBehaviour : ConstructableBehaviour<Block>
     {
         disposablesContainer.Add(model.position.Subscribe(position =>
         {
-            transform.localPosition = GetBlockCoord(position);
+            transform.localPosition = GetBlockPosition(position);
         }));
 
         disposablesContainer.Add(model.color.Subscribe(color =>
@@ -66,7 +66,7 @@ public class BlockBehaviour : ConstructableBehaviour<Block>
         }));
     }
 
-    private Vector2 GetBlockCoord(Vector2Int gridPosition)
+    private Vector2 GetBlockPosition(Vector2Int gridPosition)
     {
         return blockSize * gridPosition + blockCenter + zeroPosition;
     }

@@ -21,8 +21,6 @@ public class TetrisGrid
 
     private Dictionary<Vector2Int, Block> positionStuckBlocks = new Dictionary<Vector2Int, Block>();
 
-    private DisposablesContainer disposablesContainer = new DisposablesContainer();
-
     private List<Block> movingBlocks = new List<Block>();
 
     public TetrisGrid(bool[,] grid)

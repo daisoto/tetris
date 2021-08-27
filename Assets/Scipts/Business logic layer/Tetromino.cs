@@ -26,8 +26,8 @@ public class Tetromino : ITickable
                 if (isStuck)
                 {
                     Array.ForEach(blocks, block => block.isStuck.Value = true);
-
                     this.isStuck.Value = true;
+                    disposablesContainer.Clear();
                 }
             }));
 

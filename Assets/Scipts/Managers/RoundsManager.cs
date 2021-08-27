@@ -40,6 +40,11 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
 
     public bool TryStart()
     {
+        if (disposablesContainer.size < 1)
+        {
+            Subscribe();
+        }
+
         ClearTetrominos();
         isPlaying = true;
 
@@ -51,6 +56,7 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
         isPlaying = false;
 
         StopRound();
+        Unsubscribe();
     }
 
     protected override void Subscribe()

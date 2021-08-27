@@ -6,28 +6,40 @@ using UniRx;
 
 public class RoundsManagerPresenter : ConstructableBehaviour<RoundsManager>
 {
-    [SerializeField] private RectTransform rectTransform = null;
+    [SerializeField] private Image drawBlockPrefab = null;
+
+    [Space]
+
+    [SerializeField] private string currentRoundLabel = "current round:";
+
+    [Space]
+
+    [SerializeField] private RectTransform drawNextTetrominoContainer = null;
 
     [SerializeField] private Text roundNumber = null;
 
     [SerializeField] private GameObject roundEndObject = null;
 
+    private List<GameObject> drawnBlocksObjects = new List<GameObject>();
+
     protected override void Subscribe()
     {
-        //disposablesContainer.Add(model.nextTetromino.Subscribe(nextTetromino =>
-        //{
-        //    if (nextTetromino != null)
-        //    {
-        //        DrawNextTetromino(nextTetromino);
-        //    }
+        disposablesContainer.Add(model.nextTetromino.Subscribe(nextTetromino =>
+        {
+            ClearDrawnBlocksObjects();
 
-        //    roundEndObject.SetActive(nextTetromino == null);
-        //}));
+            if (nextTetromino != null)
+            {
+                DrawNextTetromino(nextTetromino);
+            }
 
-        //disposablesContainer.Add(model.roundNumber.Subscribe(roundNumber =>
-        //{
-        //    this.roundNumber.text = roundNumber.ToString();
-        //}));
+            roundEndObject.SetActive(nextTetromino == null);
+        }));
+
+        disposablesContainer.Add(model.roundNumber.Subscribe(roundNumber =>
+        {
+            this.roundNumber.text = currentRoundLabel + " " + roundNumber.ToString();
+        }));
     }
 
     private void DrawNextTetromino(Tetromino nextTetromino)
@@ -38,8 +50,48 @@ public class RoundsManagerPresenter : ConstructableBehaviour<RoundsManager>
         bool[,] shape = nextTetromino.shape;
         Vector2Int shapeSize = new Vector2Int(shape.GetLength(0), shape.GetLength(1));
 
-        Vector2 blockSize = rectTransform.sizeDelta / (shapeSize + Vector2Int.one);
+        Vector2 blockSize = drawNextTetrominoContainer.rect.size / (shapeSize + Vector2Int.one);
 
+        if (blockSize.x < blockSize.y)
+        {
+            blockSize.y = blockSize.x;
+        }
+        else
+        {
+            blockSize.x = blockSize.y;
+        }
 
+        for (int i = 0; i < shapeSize.x; i++)
+        {
+            for (int j = 0; j < shapeSize.y; j++)
+            {
+                if (shape[i, j])
+                {
+                    Image blockImage = Instantiate(drawBlockPrefab, drawNextTetrominoContainer);
+                    drawnBlocksObjects.Add(blockImage.gameObject);
+
+                    blockImage.color = color;
+                    blockImage.sprite = sprite;
+                    blockImage.rectTransform.sizeDelta = blockSize;
+
+                    blockImage.transform.localPosition = GetBlockPosition(blockSize, new Vector2Int(j, i), new Vector2(shapeSize.y, shapeSize.x));
+                }
+            }
+        }
+    }
+
+    private Vector2 GetBlockPosition(Vector2 blockSize, Vector2Int gridPos, Vector2 drawnTetrominoSize)
+    {
+        Vector2 freeSpace = drawNextTetrominoContainer.rect.size - drawnTetrominoSize * blockSize;
+
+        Vector2 newPosition = blockSize * gridPos + freeSpace / 2;
+
+        return newPosition;
+    }
+
+    private void ClearDrawnBlocksObjects()
+    {
+        drawnBlocksObjects.ForEach(db => Destroy(db));
+        drawnBlocksObjects.Clear();
     }
 }

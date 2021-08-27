@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class TetrominoFactory : IFactory<Tetromino>
 {
@@ -51,7 +52,7 @@ public class TetrominoFactory : IFactory<Tetromino>
             {
                 if (tetrominoData.shape[i, j])
                 {
-                    blocks[blockIndex].position.Value = axis + new Vector2Int(i, j);
+                    blocks[blockIndex].position.Value = axis + new Vector2Int(j, i);
                     blockIndex++;
                 }
             }
