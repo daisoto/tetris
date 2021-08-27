@@ -1,9 +1,9 @@
 using UnityEngine;
 
-[RequireComponent(typeof(SpriteMask))]
 public class SpriteMaskScaler : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer targetRenderer = null;
+    [SerializeField] private SpriteMask spriteMask = null;
 
     private void Awake()
     {
@@ -13,11 +13,6 @@ public class SpriteMaskScaler : MonoBehaviour
     [ContextMenu("Scale")]
     private void Scale()
     {
-        SpriteMask spriteMask = GetComponent<SpriteMask>();
-
-        Debug.Log(targetRenderer.size);
-        Debug.Log(spriteMask.sprite.bounds.size);
-
-        transform.localScale = targetRenderer.size / spriteMask.sprite.bounds.size;
+        spriteMask.transform.localScale = targetRenderer.size / spriteMask.sprite.bounds.size;
     }
 }

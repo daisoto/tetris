@@ -11,6 +11,8 @@ public class InputManager : ConstructableBehaviour<float>
     public ReactiveCommand onRightPressed = new ReactiveCommand();
     public ReactiveCommand onRotatePressed = new ReactiveCommand();
 
+    public ReactiveCommand<float> onScroll = new ReactiveCommand<float>();
+
     public ReactiveProperty<bool> isActive = new ReactiveProperty<bool>();
 
     private bool isDownPressed = false;
@@ -36,11 +38,13 @@ public class InputManager : ConstructableBehaviour<float>
 
     protected override void Subscribe()
     {
-        playerControls.Keyboard.Movement.started += ctx => ProcessMovementInput(ctx);
-        playerControls.Keyboard.Movement.canceled += ctx => StopMovement();
+        playerControls.KeyboardAndMouse.Approaching.performed += ctx => ProcessMouseInput(ctx);
 
-        playerControls.Keyboard.Rotation.started += ctx => { isRotatePressed = true; };
-        playerControls.Keyboard.Rotation.canceled += ctx => { isRotatePressed = false; };
+        playerControls.KeyboardAndMouse.Movement.started += ctx => ProcessMovementInput(ctx);
+        playerControls.KeyboardAndMouse.Movement.canceled += ctx => StopMovement();
+
+        playerControls.KeyboardAndMouse.Rotation.started += ctx => { isRotatePressed = true; };
+        playerControls.KeyboardAndMouse.Rotation.canceled += ctx => { isRotatePressed = false; };
 
         isActiveSubscription = isActive.Subscribe(isActive =>
         {
@@ -59,11 +63,13 @@ public class InputManager : ConstructableBehaviour<float>
 
     protected override void Unsubscribe()
     {
-        playerControls.Keyboard.Movement.started -= ctx => ProcessMovementInput(ctx);
-        playerControls.Keyboard.Movement.canceled -= ctx => StopMovement();
+        playerControls.KeyboardAndMouse.Approaching.performed -= ctx => ProcessMouseInput(ctx);
 
-        playerControls.Keyboard.Rotation.started -= ctx => { isRotatePressed = true; };
-        playerControls.Keyboard.Rotation.canceled -= ctx => { isRotatePressed = false; };
+        playerControls.KeyboardAndMouse.Movement.started -= ctx => ProcessMovementInput(ctx);
+        playerControls.KeyboardAndMouse.Movement.canceled -= ctx => StopMovement();
+
+        playerControls.KeyboardAndMouse.Rotation.started -= ctx => { isRotatePressed = true; };
+        playerControls.KeyboardAndMouse.Rotation.canceled -= ctx => { isRotatePressed = false; };
 
         StopCoroutine(inputCoroutine);
 
@@ -96,6 +102,12 @@ public class InputManager : ConstructableBehaviour<float>
         isLeftPressed = false;
         isRightPressed = false;
         isRotatePressed = false;
+    }
+
+    private void ProcessMouseInput(InputAction.CallbackContext ctx)
+    {
+        float value = ctx.ReadValue<float>() > 0 ? 1 : -1;
+        onScroll.Execute(value);
     }
 
     private IEnumerator UpdateInput()

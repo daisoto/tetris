@@ -17,7 +17,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 341c61396025d874fa0472b50d754840, type: 2}
   _tetrominoDatas:
   - {fileID: 11400000, guid: 39ea43587dd505b44899fbcd9752a909, type: 2}
-  - {fileID: 11400000, guid: 60730081fbdebcb4f81b2b2b42820822, type: 2}
   _gridSize: {x: 10, y: 20}
   _initialPosition: {x: 4, y: 20}
   _inputUpdateTime: 0.1

@@ -21,25 +21,34 @@ public class DownGridCleanerProcessor : IGridCleanProcessor
     public void ProcessAfterCleaning(Dictionary<Vector2Int, Block> positionStuckBlocks, Vector2Int[] cleanedPositions)
     {
         int yCleanMax = cleanedPositions.Select(position => position.y).ToArray().Max();
+        int interationsNum = cleanedPositions.Select(position => position.y).Distinct().ToArray().Length;
+        int[] xPositionsStuck = positionStuckBlocks.Keys.Select(position => position.x).ToArray();
 
-        for (int y = yCleanMax + 1; y < gridSize.y; y++)
-        { 
-            for (int x = 0; x < gridSize.x; x++)
+        for (int i = 0; i < interationsNum; i++)
+        {
+            int[] yPositionsStuck = positionStuckBlocks.Keys.Select(position => position.y).Where(y => y > yCleanMax).ToArray();
+
+            foreach (int y in yPositionsStuck)
             {
-                Vector2Int position = new Vector2Int(x, y);
-
-                if (positionStuckBlocks.ContainsKey(position) && gridChecker.IsDefaultSpaceFree(position))
+                foreach (int x in xPositionsStuck)
                 {
-                    Block block = positionStuckBlocks[position];
-                    grid[position.x, position.y] = false;
-                    positionStuckBlocks.Remove(position);
-                    blocksMover.MoveDefault(block);
+                    Vector2Int position = new Vector2Int(x, y);
 
-                    Vector2Int newPosition = block.position.Value;
-                    grid[newPosition.x, newPosition.y] = true;
-                    positionStuckBlocks.Add(newPosition, block);
+                    if (positionStuckBlocks.ContainsKey(position) && gridChecker.IsDefaultSpaceFree(position))
+                    {
+                        Block block = positionStuckBlocks[position];
+                        grid[position.x, position.y] = false;
+                        positionStuckBlocks.Remove(position);
+                        blocksMover.MoveDefault(block);
+
+                        Vector2Int newPosition = block.position.Value;
+                        grid[newPosition.x, newPosition.y] = true;
+                        positionStuckBlocks.Add(newPosition, block);
+                    }
                 }
             }
+
+            yCleanMax--;
         }
     }
 }

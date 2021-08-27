@@ -1,4 +1,4 @@
-// GENERATED AUTOMATICALLY FROM 'Assets/Resources/PlayerControls.inputactions'
+// GENERATED AUTOMATICALLY FROM 'Assets/Resources/_Input/PlayerControls.inputactions'
 
 using System;
 using System.Collections;
@@ -15,7 +15,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     ""name"": ""PlayerControls"",
     ""maps"": [
         {
-            ""name"": ""Keyboard"",
+            ""name"": ""KeyboardAndMouse"",
             ""id"": ""2a306a0c-10cc-47a7-8a71-9767007d21b3"",
             ""actions"": [
                 {
@@ -31,6 +31,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""type"": ""Button"",
                     ""id"": ""4a897560-aa53-4d1b-acb4-603fe0920a18"",
                     ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Approaching"",
+                    ""type"": ""Value"",
+                    ""id"": ""4d865ca7-6cdb-4855-9500-9d7846747784"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
                 }
@@ -53,7 +61,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard"",
+                    ""groups"": ""KeyboardAndMouse"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -64,7 +72,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard"",
+                    ""groups"": ""KeyboardAndMouse"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -75,7 +83,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard"",
+                    ""groups"": ""KeyboardAndMouse"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -86,7 +94,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard"",
+                    ""groups"": ""KeyboardAndMouse"",
                     ""action"": ""Movement"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
@@ -97,7 +105,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""path"": ""<Keyboard>/downArrow"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard"",
+                    ""groups"": ""KeyboardAndMouse"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -108,7 +116,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""path"": ""<Keyboard>/leftArrow"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard"",
+                    ""groups"": ""KeyboardAndMouse"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -119,7 +127,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""path"": ""<Keyboard>/rightArrow"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard"",
+                    ""groups"": ""KeyboardAndMouse"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -130,8 +138,19 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard"",
+                    ""groups"": ""KeyboardAndMouse"",
                     ""action"": ""Rotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8b4dca6e-1320-46a3-9bf8-9cbd512f9414"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": ""Normalize(min=-1,max=1)"",
+                    ""groups"": ""KeyboardAndMouse"",
+                    ""action"": ""Approaching"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -140,11 +159,16 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     ],
     ""controlSchemes"": [
         {
-            ""name"": ""Keyboard"",
-            ""bindingGroup"": ""Keyboard"",
+            ""name"": ""KeyboardAndMouse"",
+            ""bindingGroup"": ""KeyboardAndMouse"",
             ""devices"": [
                 {
                     ""devicePath"": ""<Keyboard>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                },
+                {
+                    ""devicePath"": ""<Mouse>"",
                     ""isOptional"": false,
                     ""isOR"": false
                 }
@@ -152,10 +176,11 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         }
     ]
 }");
-        // Keyboard
-        m_Keyboard = asset.FindActionMap("Keyboard", throwIfNotFound: true);
-        m_Keyboard_Movement = m_Keyboard.FindAction("Movement", throwIfNotFound: true);
-        m_Keyboard_Rotation = m_Keyboard.FindAction("Rotation", throwIfNotFound: true);
+        // KeyboardAndMouse
+        m_KeyboardAndMouse = asset.FindActionMap("KeyboardAndMouse", throwIfNotFound: true);
+        m_KeyboardAndMouse_Movement = m_KeyboardAndMouse.FindAction("Movement", throwIfNotFound: true);
+        m_KeyboardAndMouse_Rotation = m_KeyboardAndMouse.FindAction("Rotation", throwIfNotFound: true);
+        m_KeyboardAndMouse_Approaching = m_KeyboardAndMouse.FindAction("Approaching", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -202,34 +227,39 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         asset.Disable();
     }
 
-    // Keyboard
-    private readonly InputActionMap m_Keyboard;
-    private IKeyboardActions m_KeyboardActionsCallbackInterface;
-    private readonly InputAction m_Keyboard_Movement;
-    private readonly InputAction m_Keyboard_Rotation;
-    public struct KeyboardActions
+    // KeyboardAndMouse
+    private readonly InputActionMap m_KeyboardAndMouse;
+    private IKeyboardAndMouseActions m_KeyboardAndMouseActionsCallbackInterface;
+    private readonly InputAction m_KeyboardAndMouse_Movement;
+    private readonly InputAction m_KeyboardAndMouse_Rotation;
+    private readonly InputAction m_KeyboardAndMouse_Approaching;
+    public struct KeyboardAndMouseActions
     {
         private @PlayerControls m_Wrapper;
-        public KeyboardActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Movement => m_Wrapper.m_Keyboard_Movement;
-        public InputAction @Rotation => m_Wrapper.m_Keyboard_Rotation;
-        public InputActionMap Get() { return m_Wrapper.m_Keyboard; }
+        public KeyboardAndMouseActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Movement => m_Wrapper.m_KeyboardAndMouse_Movement;
+        public InputAction @Rotation => m_Wrapper.m_KeyboardAndMouse_Rotation;
+        public InputAction @Approaching => m_Wrapper.m_KeyboardAndMouse_Approaching;
+        public InputActionMap Get() { return m_Wrapper.m_KeyboardAndMouse; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(KeyboardActions set) { return set.Get(); }
-        public void SetCallbacks(IKeyboardActions instance)
+        public static implicit operator InputActionMap(KeyboardAndMouseActions set) { return set.Get(); }
+        public void SetCallbacks(IKeyboardAndMouseActions instance)
         {
-            if (m_Wrapper.m_KeyboardActionsCallbackInterface != null)
+            if (m_Wrapper.m_KeyboardAndMouseActionsCallbackInterface != null)
             {
-                @Movement.started -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnMovement;
-                @Movement.performed -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnMovement;
-                @Movement.canceled -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnMovement;
-                @Rotation.started -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnRotation;
-                @Rotation.performed -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnRotation;
-                @Rotation.canceled -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnRotation;
+                @Movement.started -= m_Wrapper.m_KeyboardAndMouseActionsCallbackInterface.OnMovement;
+                @Movement.performed -= m_Wrapper.m_KeyboardAndMouseActionsCallbackInterface.OnMovement;
+                @Movement.canceled -= m_Wrapper.m_KeyboardAndMouseActionsCallbackInterface.OnMovement;
+                @Rotation.started -= m_Wrapper.m_KeyboardAndMouseActionsCallbackInterface.OnRotation;
+                @Rotation.performed -= m_Wrapper.m_KeyboardAndMouseActionsCallbackInterface.OnRotation;
+                @Rotation.canceled -= m_Wrapper.m_KeyboardAndMouseActionsCallbackInterface.OnRotation;
+                @Approaching.started -= m_Wrapper.m_KeyboardAndMouseActionsCallbackInterface.OnApproaching;
+                @Approaching.performed -= m_Wrapper.m_KeyboardAndMouseActionsCallbackInterface.OnApproaching;
+                @Approaching.canceled -= m_Wrapper.m_KeyboardAndMouseActionsCallbackInterface.OnApproaching;
             }
-            m_Wrapper.m_KeyboardActionsCallbackInterface = instance;
+            m_Wrapper.m_KeyboardAndMouseActionsCallbackInterface = instance;
             if (instance != null)
             {
                 @Movement.started += instance.OnMovement;
@@ -238,22 +268,26 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Rotation.started += instance.OnRotation;
                 @Rotation.performed += instance.OnRotation;
                 @Rotation.canceled += instance.OnRotation;
+                @Approaching.started += instance.OnApproaching;
+                @Approaching.performed += instance.OnApproaching;
+                @Approaching.canceled += instance.OnApproaching;
             }
         }
     }
-    public KeyboardActions @Keyboard => new KeyboardActions(this);
-    private int m_KeyboardSchemeIndex = -1;
-    public InputControlScheme KeyboardScheme
+    public KeyboardAndMouseActions @KeyboardAndMouse => new KeyboardAndMouseActions(this);
+    private int m_KeyboardAndMouseSchemeIndex = -1;
+    public InputControlScheme KeyboardAndMouseScheme
     {
         get
         {
-            if (m_KeyboardSchemeIndex == -1) m_KeyboardSchemeIndex = asset.FindControlSchemeIndex("Keyboard");
-            return asset.controlSchemes[m_KeyboardSchemeIndex];
+            if (m_KeyboardAndMouseSchemeIndex == -1) m_KeyboardAndMouseSchemeIndex = asset.FindControlSchemeIndex("KeyboardAndMouse");
+            return asset.controlSchemes[m_KeyboardAndMouseSchemeIndex];
         }
     }
-    public interface IKeyboardActions
+    public interface IKeyboardAndMouseActions
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnRotation(InputAction.CallbackContext context);
+        void OnApproaching(InputAction.CallbackContext context);
     }
 }
