@@ -1,8 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UniRx;
+using DG.Tweening;
 
 public class RoundsManagerPresenter : ConstructableBehaviour<RoundsManager>
 {
@@ -10,13 +10,13 @@ public class RoundsManagerPresenter : ConstructableBehaviour<RoundsManager>
 
     [Space]
 
-    [SerializeField] private string currentRoundLabel = "current round:";
+    [SerializeField] private string currentRoundLabel = "Round:";
 
     [Space]
 
     [SerializeField] private RectTransform drawNextTetrominoContainer = null;
 
-    [SerializeField] private Text roundNumber = null;
+    [SerializeField] private Text roundText = null;
 
     [SerializeField] private GameObject roundEndObject = null;
 
@@ -38,7 +38,11 @@ public class RoundsManagerPresenter : ConstructableBehaviour<RoundsManager>
 
         disposablesContainer.Add(model.roundNumber.Subscribe(roundNumber =>
         {
-            this.roundNumber.text = currentRoundLabel + " " + roundNumber.ToString();
+            roundText.DOFade(0, 0.1f).OnComplete(() =>
+            {
+                roundText.text = currentRoundLabel + " " + roundNumber.ToString();
+                roundText.DOFade(1, 0.1f);
+            });
         }));
     }
 

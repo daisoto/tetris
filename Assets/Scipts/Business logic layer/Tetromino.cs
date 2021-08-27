@@ -5,17 +5,20 @@ public class Tetromino : ITickable
 {
     public ReactiveProperty<bool> isStuck = new ReactiveProperty<bool>(false);
 
+    public ReactiveCommand onMoveLeft = new ReactiveCommand();
+    public ReactiveCommand onMoveRight = new ReactiveCommand();
+    public ReactiveCommand onMoveDown = new ReactiveCommand();
+    public ReactiveCommand onRotate = new ReactiveCommand();
+    public ReactiveCommand onTick = new ReactiveCommand();
+
     public Block[] blocks { get; private set; }
 
     public bool[,] shape { get; private set; }
 
-    private TetrisGrid tetrisGrid = null;
-
     private DisposablesContainer disposablesContainer = new DisposablesContainer();
 
-    public Tetromino(TetrisGrid tetrisGrid, Block[] blocks, bool[,] shape)
+    public Tetromino(Block[] blocks, bool[,] shape)
     {
-        this.tetrisGrid = tetrisGrid;
         this.blocks = blocks;
         this.shape = shape;
 
@@ -58,27 +61,27 @@ public class Tetromino : ITickable
     {
         if (!isStuck.Value)
         {
-            tetrisGrid.MoveDefault(blocks);
+            onTick.Execute();
         }
     }
 
     public void Rotate()
     {
-        tetrisGrid.Rotate(blocks);
+        onRotate.Execute();
     }
 
     public void MoveLeft()
     {
-        tetrisGrid.MoveLeft(blocks);
+        onMoveLeft.Execute();
     }
 
     public void MoveRight()
     {
-        tetrisGrid.MoveRight(blocks);
+        onMoveRight.Execute();
     }
 
     public void MoveDown()
     {
-        tetrisGrid.MoveDown(blocks);
+        onMoveDown.Execute();
     }
 }

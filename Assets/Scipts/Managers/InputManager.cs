@@ -6,10 +6,10 @@ using UnityEngine.InputSystem;
 
 public class InputManager : ConstructableBehaviour<float>
 {
-    public ReactiveCommand onDownPressed = new ReactiveCommand();
-    public ReactiveCommand onLeftPressed = new ReactiveCommand();
-    public ReactiveCommand onRightPressed = new ReactiveCommand();
-    public ReactiveCommand onRotatePressed = new ReactiveCommand();
+    public ReactiveCommand onDownPress = new ReactiveCommand();
+    public ReactiveCommand onLeftPress = new ReactiveCommand();
+    public ReactiveCommand onRightPress = new ReactiveCommand();
+    public ReactiveCommand onRotatePress = new ReactiveCommand();
 
     public ReactiveCommand<float> onScroll = new ReactiveCommand<float>();
 
@@ -116,22 +116,22 @@ public class InputManager : ConstructableBehaviour<float>
         {
             if (isDownPressed)
             {
-                onDownPressed?.Execute();
+                onDownPress?.Execute();
             }
 
             if (isLeftPressed)
             {
-                onLeftPressed?.Execute();
+                onLeftPress?.Execute();
             }
 
             if (isRightPressed)
             {
-                onRightPressed?.Execute();
+                onRightPress?.Execute();
             }
 
             if (isRotatePressed)
             {
-                onRotatePressed?.Execute();
+                onRotatePress?.Execute();
             }
 
             yield return new WaitForSeconds(model);

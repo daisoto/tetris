@@ -45,7 +45,6 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
             Subscribe();
         }
 
-        ClearTetrominos();
         isPlaying = true;
 
         return TryStartNewRound();
@@ -55,6 +54,7 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
     {
         isPlaying = false;
 
+        ClearTetrominos();
         StopRound();
         Unsubscribe();
     }

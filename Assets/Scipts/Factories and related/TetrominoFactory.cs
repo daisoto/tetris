@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 public class TetrominoFactory : IFactory<Tetromino>
 {
@@ -8,16 +7,14 @@ public class TetrominoFactory : IFactory<Tetromino>
 
     private Vector2Int initialPosition = default;
 
-    private TetrisGrid tetrisGrid = null;
-
     private IPool<Block> blocksPool = null;
 
-    public TetrominoFactory(Vector2Int initialPosition, TetrisGrid tetrisGrid, IPool<Block> blocksPool, TetrominoData[] tetrominoDatas)
+    public TetrominoFactory(Vector2Int gridSize, IPool<Block> blocksPool, TetrominoData[] tetrominoDatas)
     {
         this.tetrominoDatas = tetrominoDatas;
         this.blocksPool = blocksPool;
-        this.tetrisGrid = tetrisGrid;
-        this.initialPosition = initialPosition - Vector2Int.one;
+
+        initialPosition = new CeilInitialPositionProvider().GetInitialPosition(gridSize);
     }
 
     public Tetromino Create()
@@ -33,16 +30,16 @@ public class TetrominoFactory : IFactory<Tetromino>
 
         SetBlocksPosition(tetrominoData, blocks.ToArray());
 
-        Tetromino tetromino = new Tetromino(tetrisGrid, blocks.ToArray(), tetrominoData.shape);
+        Tetromino tetromino = new Tetromino(blocks.ToArray(), tetrominoData.shape);
 
         return tetromino;
     }
 
     private void SetBlocksPosition(TetrominoData tetrominoData, Block[] blocks)
     {
-        int xCenter = Misc.GetBankRounded(tetrominoData.size.x / 2f, true);
+        //int xCenter = Misc.GetBankRounded(tetrominoData.size.x / 2f);
 
-        Vector2Int axis = initialPosition + new Vector2Int(xCenter, 0);
+        //Vector2Int axis = initialPosition + new Vector2Int(xCenter, 0);
 
         int blockIndex = 0;
 
@@ -52,7 +49,7 @@ public class TetrominoFactory : IFactory<Tetromino>
             {
                 if (tetrominoData.shape[i, j])
                 {
-                    blocks[blockIndex].position.Value = axis + new Vector2Int(j, i);
+                    blocks[blockIndex].position.Value = initialPosition + new Vector2Int(j, i);
                     blockIndex++;
                 }
             }

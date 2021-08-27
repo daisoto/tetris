@@ -21,8 +21,6 @@ public class TetrisGrid
 
     private Dictionary<Vector2Int, Block> positionStuckBlocks = new Dictionary<Vector2Int, Block>();
 
-    private List<Block> movingBlocks = new List<Block>();
-
     public TetrisGrid(bool[,] grid)
     {
         this.grid = grid;
@@ -45,33 +43,28 @@ public class TetrisGrid
         positionStuckBlocks.Clear();
     }
 
-    public void AddBlocks(Block[] blocks)
+    public void Rotate(Tetromino tetromino)
     {
-        movingBlocks.AddRange(blocks);
+        blocksRotator.Rotate(tetromino.blocks);
     }
 
-    public void Rotate(Block[] blocks)
+    public void MoveDefault(Tetromino tetromino)
     {
-        blocksRotator.Rotate(blocks);
-    }
-
-    public void MoveDefault(Block[] blocks)
-    {
-        foreach (Block block in blocks)
+        foreach (Block block in tetromino.blocks)
         {
             if (!gridChecker.IsDefaultSpaceFree(block.position.Value))
             {
-                Insert(blocks);
+                Insert(tetromino);
                 return;
             }
         }
 
-        blocksMover.MoveDefault(blocks);
+        blocksMover.MoveDefault(tetromino.blocks);
     }
 
-    public void MoveLeft(Block[] blocks)
+    public void MoveLeft(Tetromino tetromino)
     {
-        foreach (Block block in blocks)
+        foreach (Block block in tetromino.blocks)
         {
             if (!gridChecker.IsLeftSpaceFree(block.position.Value))
             {
@@ -79,12 +72,12 @@ public class TetrisGrid
             }
         }
 
-        blocksMover.MoveLeft(blocks);
+        blocksMover.MoveLeft(tetromino.blocks);
     }
 
-    public void MoveRight(Block[] blocks)
+    public void MoveRight(Tetromino tetromino)
     {
-        foreach (Block block in blocks)
+        foreach (Block block in tetromino.blocks)
         {
             if (!gridChecker.IsRightSpaceFree(block.position.Value))
             {
@@ -92,12 +85,12 @@ public class TetrisGrid
             }
         }
 
-        blocksMover.MoveRight(blocks);
+        blocksMover.MoveRight(tetromino.blocks);
     }
 
-    public void MoveDown(Block[] blocks)
+    public void MoveDown(Tetromino tetromino)
     {
-        foreach (Block block in blocks)
+        foreach (Block block in tetromino.blocks)
         {
             if (!gridChecker.IsDownSpaceFree(block.position.Value))
             {            
@@ -105,14 +98,13 @@ public class TetrisGrid
             }
         }
 
-        blocksMover.MoveDown(blocks);
+        blocksMover.MoveDown(tetromino.blocks);
     }
 
-    public void Insert(Block[] blocks)
+    public void Insert(Tetromino tetromino)
     {
-        foreach (Block block in blocks)
+        foreach (Block block in tetromino.blocks)
         {
-            block.isStuck.Value = true;
             Vector2Int position = block.position.Value;
 
             if (positionStuckBlocks.ContainsKey(position))
@@ -124,12 +116,14 @@ public class TetrisGrid
                 return;
             }
 
+            block.isStuck.Value = true;
+
             positionStuckBlocks.Add(position, block);
 
             grid[position.x, position.y] = true;
         }
 
-        ProcessInsertedBlocks(blocks);
+        ProcessInsertedBlocks(tetromino.blocks);
     }
 
     private void ProcessInsertedBlocks(Block[] blocks)
