@@ -1,7 +1,7 @@
 using System;
 using UniRx;
 
-public class Tetromino: ITickable
+public class Tetromino : ITickable
 {
     public ReactiveProperty<bool> isStuck = new ReactiveProperty<bool>(false);
 
@@ -26,11 +26,32 @@ public class Tetromino: ITickable
                 if (isStuck)
                 {
                     Array.ForEach(blocks, block => block.isStuck.Value = true);
-                    
+
                     this.isStuck.Value = true;
                 }
             }));
+
+            disposablesContainer.Add(block.isAlive.Subscribe(isAlive =>
+            {
+                if (!isAlive)
+                {
+                    Destroy();
+                }
+            }));
         }
+    }
+
+    public void Destroy()
+    {
+        foreach (Block block in blocks)
+        {
+            if (block != null)
+            {
+                block.isAlive.Value = false;
+            }
+        }
+
+        Array.Clear(blocks, 0, blocks.Length);
     }
 
     public void Tick()

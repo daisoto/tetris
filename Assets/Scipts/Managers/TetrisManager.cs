@@ -42,7 +42,7 @@ public class TetrisManager: MonoBehaviour
     {
         inputManager.isActive.Value = true;
 
-        roundsManager.TryStartNewRound();
+        roundsManager.TryStart();
     }
 
     private void OnEnable()
@@ -60,8 +60,9 @@ public class TetrisManager: MonoBehaviour
 
         disposablesContainer.Add(tetrisGrid.onGameOver.Subscribe(_ =>
         {
-            roundsManager.StopRound();
-            blocksPool.Clear();
+            roundsManager.Stop();
+            blocksPool?.Clear();
+            inputDisposablesContainer.Clear();
         }));
 
         BindInputManager();

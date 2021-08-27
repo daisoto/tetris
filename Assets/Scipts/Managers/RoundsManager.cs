@@ -14,6 +14,8 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
 
     public ReactiveProperty<int> roundNumber = new ReactiveProperty<int>();
 
+    private bool isPlaying = false;
+
     private float currentFallPeriod => currentRound.fallPeriod;
 
     private Queue<Round> rounds = new Queue<Round>();
@@ -36,7 +38,26 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
         isConstructed = true;
     }
 
-    public void StopRound()
+    public bool TryStart()
+    {
+        isPlaying = true;
+
+        return TryStartNewRound();
+    }
+
+    public void Stop()
+    {
+        isPlaying = false;
+
+        StopRound();
+
+        currentTetromino.Value.Destroy();
+        currentTetromino.Value = null;
+        nextTetromino.Value.Destroy();
+        nextTetromino.Value = null;
+    }
+
+    private void StopRound()
     {
         if (updateRoundCoroutine != null)
         {
@@ -63,7 +84,7 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
         }));
     }
 
-    public bool TryStartNewRound()
+    private bool TryStartNewRound()
     {
         StopRound();
 
@@ -74,9 +95,12 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
             return false;
         }
 
-        StartNewRound();
+        if (isPlaying)
+        {
+            StartNewRound();
+        }
 
-        return true;
+        return isPlaying;
     }
 
     private void StartNewRound()

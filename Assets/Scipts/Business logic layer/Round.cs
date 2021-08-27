@@ -36,6 +36,8 @@ public class Round : ITickable
 
 	public void StartRound()
 	{
+		currentTetrominoNum = 1;
+
 		SetTetraminos();
 		SubscribeOnStuck();
 	}

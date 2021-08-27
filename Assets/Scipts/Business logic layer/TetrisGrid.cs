@@ -114,6 +114,8 @@ public class TetrisGrid
 
             if (positionStuckBlocks.ContainsKey(position))
             {
+                block.isAlive.Value = false;
+
                 ClearStuck();
                 onGameOver.Execute();
 
@@ -135,8 +137,9 @@ public class TetrisGrid
             Vector2Int position = positionStuckBlock.Key;
             grid[position.x, position.y] = false;
             positionStuckBlock.Value.isAlive.Value = false;
-            positionStuckBlocks.Remove(position);
         }
+
+        positionStuckBlocks.Clear();
     }
 
     private void ProcessInsertedBlocks(Block[] blocks)
