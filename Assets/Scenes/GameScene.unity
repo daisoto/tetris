@@ -859,6 +859,7 @@ MonoBehaviour:
   roundsManager: {fileID: 2063849317}
   blockBehavioursGenerator: {fileID: 109378196}
   inputManager: {fileID: 1650608665}
+  tetrominoBindingManager: {fileID: 1678699177}
   scoreManagerPresenter: {fileID: 935473656}
   roundsManagerPresenter: {fileID: 1231331507}
 --- !u!4 &691337415
@@ -1085,6 +1086,7 @@ Transform:
   - {fileID: 691337415}
   - {fileID: 2063849316}
   - {fileID: 1650608666}
+  - {fileID: 1678699176}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1207,10 +1209,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eac31b107f0ba5947b46ab62b7207b0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreText: {fileID: 1168220814}
-  linesText: {fileID: 266959786}
   scoreLabel: 'Score:'
   linesLabel: 'Lines:'
+  fadeDuration: 0.1
+  scoreText: {fileID: 1168220814}
+  linesText: {fileID: 266959786}
 --- !u!1 &1168220812
 GameObject:
   m_ObjectHideFlags: 0
@@ -1499,8 +1502,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   drawBlockPrefab: {fileID: 6472425707453106144, guid: 01955096d23c3224bb594da3415f8fa9, type: 3}
   currentRoundLabel: 'Round:'
+  fadeDuration: 0.1
   drawNextTetrominoContainer: {fileID: 551656275}
-  roundNumber: {fileID: 1259431640}
+  roundText: {fileID: 1259431640}
   roundEndObject: {fileID: 542663603}
 --- !u!1 &1254137620
 GameObject:
@@ -1953,7 +1957,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isActive:
-    value: 0
+    value: 1
 --- !u!4 &1650608666
 Transform:
   m_ObjectHideFlags: 0
@@ -1968,6 +1972,51 @@ Transform:
   m_Father: {fileID: 731622227}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1678699175
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1678699176}
+  - component: {fileID: 1678699177}
+  m_Layer: 0
+  m_Name: TetrominoBindingManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1678699176
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1678699175}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 731622227}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1678699177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1678699175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6123b11ddb19a944f8ade21cee158131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roundsManager: {fileID: 2063849317}
+  inputManager: {fileID: 1650608665}
 --- !u!1 &1957152057
 GameObject:
   m_ObjectHideFlags: 0

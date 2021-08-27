@@ -12,6 +12,8 @@ public class RoundsManagerPresenter : ConstructableBehaviour<RoundsManager>
 
     [SerializeField] private string currentRoundLabel = "Round:";
 
+    [SerializeField] private float fadeDuration = 0.1f;
+
     [Space]
 
     [SerializeField] private RectTransform drawNextTetrominoContainer = null;
@@ -38,10 +40,10 @@ public class RoundsManagerPresenter : ConstructableBehaviour<RoundsManager>
 
         disposablesContainer.Add(model.roundNumber.Subscribe(roundNumber =>
         {
-            roundText.DOFade(0, 0.1f).OnComplete(() =>
+            roundText.DOFade(0, fadeDuration).OnComplete(() =>
             {
                 roundText.text = currentRoundLabel + " " + roundNumber.ToString();
-                roundText.DOFade(1, 0.1f);
+                roundText.DOFade(1, fadeDuration);
             });
         }));
     }

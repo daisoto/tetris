@@ -13,6 +13,8 @@ public class TetrisManager: MonoBehaviour
 
     [SerializeField] private InputManager inputManager = null;
 
+    [SerializeField] private TetrominoBindingManager tetrominoBindingManager = null;
+
     [Space(20)]
 
     [SerializeField] private ScoreManagerPresenter scoreManagerPresenter = null;
@@ -31,16 +33,13 @@ public class TetrisManager: MonoBehaviour
 
     private DisposablesContainer disposablesContainer = new DisposablesContainer();
 
-    private DisposablesContainer inputDisposablesContainer = new DisposablesContainer();
-
-    private DisposablesContainer tetrominoGridDisposablesContainer = new DisposablesContainer();
-
     private void Awake()
     {
         Install();
     }
 
-    private void Start()
+    [ContextMenu("Start")]
+    public void StartGame()
     {
         inputManager.isActive.Value = true;
         tetrisGrid.ClearGrid();
@@ -63,21 +62,14 @@ public class TetrisManager: MonoBehaviour
         disposablesContainer.Add(tetrisGrid.onGameOver.Subscribe(_ =>
         {
             scoreManager?.Reset();
-            roundsManager?.Stop();
             blocksPool?.Clear();
-            inputDisposablesContainer?.Clear();
         }));
 
         disposablesContainer.Add(roundsManager.OnRoundsFinish.Subscribe(_ =>
         {
             scoreManager?.Reset();
-            roundsManager?.Stop();
             blocksPool?.Clear();
-            inputDisposablesContainer?.Clear();
         }));
-
-        BindInputManager();
-        BindTetrominoActions();
     }
 
     private void OnDisable()
@@ -105,66 +97,7 @@ public class TetrisManager: MonoBehaviour
         scoreManagerPresenter.Construct(scoreManager);
 
         roundsManagerPresenter.Construct(roundsManager);
-    }
 
-    private void BindTetrominoActions()
-    {
-        disposablesContainer.Add(roundsManager.currentTetromino.Subscribe(tetromino =>
-        {
-            tetrominoGridDisposablesContainer.Clear();
-
-            tetrominoGridDisposablesContainer.Add(tetromino?.onTick.Subscribe(_ =>
-            {
-                tetrisGrid?.MoveDefault(tetromino);
-            }));
-
-            tetrominoGridDisposablesContainer.Add(tetromino?.onMoveLeft.Subscribe(_ =>
-            {
-                tetrisGrid?.MoveLeft(tetromino);
-            }));
-
-            tetrominoGridDisposablesContainer.Add(tetromino?.onMoveRight.Subscribe(_ =>
-            {
-                tetrisGrid?.MoveRight(tetromino);
-            }));
-
-            tetrominoGridDisposablesContainer.Add(tetromino?.onMoveDown.Subscribe(_ =>
-            {
-                tetrisGrid?.MoveDown(tetromino);
-            }));
-
-            tetrominoGridDisposablesContainer.Add(tetromino?.onRotate.Subscribe(_ =>
-            {
-                tetrisGrid?.Rotate(tetromino);
-            }));
-        }));
-    }
-
-    private void BindInputManager()
-    {
-        disposablesContainer.Add(roundsManager.currentTetromino.Subscribe(tetromino =>
-        {
-            inputDisposablesContainer.Clear();
-
-            inputDisposablesContainer.Add(inputManager.onDownPress.Subscribe(_ =>
-            {
-                tetromino?.MoveDown();
-            }));
-
-            inputDisposablesContainer.Add(inputManager.onLeftPress.Subscribe(_ =>
-            {
-                tetromino?.MoveLeft();
-            }));
-
-            inputDisposablesContainer.Add(inputManager.onRightPress.Subscribe(_ =>
-            {
-                tetromino?.MoveRight();
-            }));
-
-            inputDisposablesContainer.Add(inputManager.onRotatePress.Subscribe(_ =>
-            {
-                tetromino?.Rotate();
-            }));
-        }));
-    }
+        tetrominoBindingManager.Construct(tetrisGrid);
+    }    
 }
