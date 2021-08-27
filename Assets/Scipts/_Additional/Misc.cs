@@ -2,7 +2,7 @@
 
 public static class Misc
 {
-    public static int GetBankRounded(float value)
+    public static int GetBankRounded(float value, bool isInversed = false)
     {
         int truncatedValue = (int)Math.Truncate(value);
 
@@ -11,7 +11,7 @@ public static class Misc
             return (int)Math.Round(value);
         }
 
-        if (truncatedValue % 2 == 0)
+        if (truncatedValue % 2 == 0 ^ isInversed)
         {
             return (int)Math.Floor(value);
         }

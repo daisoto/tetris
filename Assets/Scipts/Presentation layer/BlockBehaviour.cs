@@ -45,18 +45,12 @@ public class BlockBehaviour : ConstructableBehaviour<Block>
 
         disposablesContainer.Add(model.isStuck.Subscribe(isStuck =>
         {
-            if (isStuck)
+            if (isStuck && model.isAlive.Value && transform != null)
             {
-                if (transform != null)
+                transform.DOScale(1.1f, fadeDuration / 2.5f).OnComplete(() =>
                 {
-                    transform.DOScale(1.1f, fadeDuration / 2).OnComplete(() =>
-                    {
-                        if (transform != null)
-                        {
-                            transform.DOScale(1, fadeDuration / 2);
-                        }
-                    });
-                }
+                    transform.DOScale(1, fadeDuration / 2.5f);
+                });
             }
         }));
 
@@ -64,7 +58,7 @@ public class BlockBehaviour : ConstructableBehaviour<Block>
         {
             if (!isAlive)
             {
-                spriteRenderer?.DOFade(0, fadeDuration).OnComplete(() =>
+                spriteRenderer.DOFade(0, fadeDuration).OnComplete(() =>
                 {
                     Destroy(gameObject);
                 });

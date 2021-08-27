@@ -13,6 +13,8 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
     public ReactiveProperty<Tetromino> currentTetromino = new ReactiveProperty<Tetromino>();
     public ReactiveProperty<Tetromino> nextTetromino = new ReactiveProperty<Tetromino>();
 
+    public ReactiveProperty<int> roundNumber = new ReactiveProperty<int>();
+
     private float currentFallPeriod => currentRound.fallPeriod;
 
     private Queue<Round> rounds = new Queue<Round>();
@@ -77,6 +79,7 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
     {
         SetNewRound();
         currentRound.StartRound();
+        roundNumber.Value++;
         updateRoundCoroutine = UpdateRound();
         StartCoroutine(updateRoundCoroutine);
     }

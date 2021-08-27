@@ -13,6 +13,12 @@ public class TetrisManager: MonoBehaviour
 
     [SerializeField] private InputManager inputManager = null;
 
+    [Space(20)]
+
+    [SerializeField] private ScoreManagerPresenter scoreManagerPresenter = null;
+
+    [SerializeField] private RoundsManagerPresenter roundsManagerPresenter = null;
+
     private ScoreManager scoreManager = null;
 
     private bool[,] grid = null;

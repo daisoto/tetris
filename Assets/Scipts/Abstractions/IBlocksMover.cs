@@ -1,9 +1,5 @@
-using UnityEngine;
-
 public interface IBlocksMover
 {
-    Vector2Int moveVector { get; }
-
     void MoveDefault(Block[] blocks);
     void MoveDefault(Block block);
 

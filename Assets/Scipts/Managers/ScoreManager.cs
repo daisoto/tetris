@@ -3,7 +3,8 @@ using UniRx;
 
 public class ScoreManager
 {
-    public ReactiveProperty<int> currentScore = new ReactiveProperty<int>();
+    public ReactiveProperty<int> score = new ReactiveProperty<int>();
+    public ReactiveProperty<int> lineNum = new ReactiveProperty<int>();
 
     private ReactiveCollection<IScoreEvent> scoreEvents = new ReactiveCollection<IScoreEvent>();
 
@@ -41,7 +42,8 @@ public class ScoreManager
 
         disposablesContainer.Add(scoreEvents.ObserveAdd().Subscribe(addedEvent =>
         {
-            currentScore.Value += scoreFunc(addedEvent.Value.rawScore);
+            score.Value += scoreFunc(addedEvent.Value.rawScore);
+            lineNum.Value += addedEvent.Value.rawScore;
         }));
     }
 
@@ -51,7 +53,7 @@ public class ScoreManager
 
         disposablesContainer.Add(scoreEvents.ObserveAdd().Subscribe(addEvent =>
         {
-            currentScore.Value = this.scoreFunc(addEvent.Value.rawScore);
+            score.Value = this.scoreFunc(addEvent.Value.rawScore);
         }));
     }
 

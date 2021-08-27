@@ -35,7 +35,7 @@ public class DownGridCleanerProcessor : IGridCleanProcessor
                     positionStuckBlocks.Remove(position);
                     blocksMover.MoveDefault(block);
 
-                    Vector2Int newPosition = position + blocksMover.moveVector;
+                    Vector2Int newPosition = block.position.Value;
                     grid[newPosition.x, newPosition.y] = true;
                     positionStuckBlocks.Add(newPosition, block);
                 }

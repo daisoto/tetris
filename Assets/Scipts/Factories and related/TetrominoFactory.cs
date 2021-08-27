@@ -39,7 +39,7 @@ public class TetrominoFactory : IFactory<Tetromino>
 
     private void SetBlocksPosition(TetrominoData tetrominoData, Block[] blocks)
     {
-        int xCenter = Misc.GetBankRounded(tetrominoData.size.x / 2f);
+        int xCenter = Misc.GetBankRounded(tetrominoData.size.x / 2f, true);
 
         Vector2Int axis = initialPosition + new Vector2Int(xCenter, 0);
 

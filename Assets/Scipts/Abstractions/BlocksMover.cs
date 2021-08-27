@@ -2,8 +2,6 @@
 
 public abstract class BlocksMover : IBlocksMover
 {
-    public abstract Vector2Int moveVector { get; }
-
     protected bool[,] grid = null;
 
     public BlocksMover(bool[,] grid)
