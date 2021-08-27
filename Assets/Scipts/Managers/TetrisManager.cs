@@ -41,7 +41,7 @@ public class TetrisManager: MonoBehaviour
     private void Start()
     {
         inputManager.isActive.Value = true;
-
+        tetrisGrid.ClearGrid();
         roundsManager.TryStart();
     }
 
@@ -60,9 +60,18 @@ public class TetrisManager: MonoBehaviour
 
         disposablesContainer.Add(tetrisGrid.onGameOver.Subscribe(_ =>
         {
-            roundsManager.Stop();
+            scoreManager?.Reset();
+            roundsManager?.Stop();
             blocksPool?.Clear();
-            inputDisposablesContainer.Clear();
+            inputDisposablesContainer?.Clear();
+        }));
+
+        disposablesContainer.Add(roundsManager.OnRoundsFinish.Subscribe(_ =>
+        {
+            scoreManager?.Reset();
+            roundsManager?.Stop();
+            blocksPool?.Clear();
+            inputDisposablesContainer?.Clear();
         }));
 
         BindInputManager();
@@ -89,6 +98,10 @@ public class TetrisManager: MonoBehaviour
         roundsManager.Construct(tetrisSettingsData.roundDatas, tetrominoFactory);
 
         inputManager.Construct(tetrisSettingsData.inputUpdateTime);
+
+        scoreManagerPresenter.Construct(scoreManager);
+
+        roundsManagerPresenter.Construct(roundsManager);
     }
 
     private void BindInputManager()

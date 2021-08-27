@@ -8,8 +8,6 @@ public class TetrisGrid
     public ReactiveCommand onGameOver = new ReactiveCommand();
 
     public ReactiveCommand<int> OnBlocksClear = new ReactiveCommand<int>();
-    
-    public ReactiveCommand<Block[]> OnInsert = new ReactiveCommand<Block[]>();
 
     private bool[,] grid = null;
 
@@ -35,11 +33,18 @@ public class TetrisGrid
         blocksMover = new DownBlocksMover(grid);
         blocksRotator = new RightAngleBlocksRotator(gridChecker);
         gridCleanProcessor = new DownGridCleanerProcessor(grid, gridChecker, blocksMover);
+    }
 
-        disposablesContainer.Add(OnInsert.Subscribe(blocks =>
+    public void ClearGrid()
+    {
+        foreach (KeyValuePair<Vector2Int, Block> positionStuckBlock in positionStuckBlocks)
         {
-            ProcessInsertedBlocks(blocks);
-        }));
+            Vector2Int position = positionStuckBlock.Key;
+            grid[position.x, position.y] = false;
+            positionStuckBlock.Value.isAlive.Value = false;
+        }
+
+        positionStuckBlocks.Clear();
     }
 
     public void AddBlocks(Block[] blocks)
@@ -116,7 +121,6 @@ public class TetrisGrid
             {
                 block.isAlive.Value = false;
 
-                ClearStuck();
                 onGameOver.Execute();
 
                 return;
@@ -127,19 +131,7 @@ public class TetrisGrid
             grid[position.x, position.y] = true;
         }
 
-        OnInsert.Execute(blocks);
-    }
-
-    private void ClearStuck()
-    {
-        foreach (KeyValuePair<Vector2Int, Block> positionStuckBlock in positionStuckBlocks)
-        {
-            Vector2Int position = positionStuckBlock.Key;
-            grid[position.x, position.y] = false;
-            positionStuckBlock.Value.isAlive.Value = false;
-        }
-
-        positionStuckBlocks.Clear();
+        ProcessInsertedBlocks(blocks);
     }
 
     private void ProcessInsertedBlocks(Block[] blocks)

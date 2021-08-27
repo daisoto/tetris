@@ -57,6 +57,12 @@ public class ScoreManager
         }));
     }
 
+    public void Reset()
+    {
+        score.Value = 0;
+        lineNum.Value = 0;
+    }
+
     public void SendScore(int rawScore)
     {
         ScoreEvent scoreEvent = new ScoreEvent(rawScore); 

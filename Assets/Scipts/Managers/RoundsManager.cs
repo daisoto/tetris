@@ -40,6 +40,7 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
 
     public bool TryStart()
     {
+        ClearTetrominos();
         isPlaying = true;
 
         return TryStartNewRound();
@@ -50,19 +51,6 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
         isPlaying = false;
 
         StopRound();
-
-        currentTetromino.Value.Destroy();
-        currentTetromino.Value = null;
-        nextTetromino.Value.Destroy();
-        nextTetromino.Value = null;
-    }
-
-    private void StopRound()
-    {
-        if (updateRoundCoroutine != null)
-        {
-            StopCoroutine(updateRoundCoroutine);
-        }
     }
 
     protected override void Subscribe()
@@ -84,12 +72,21 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
         }));
     }
 
+    private void StopRound()
+    {
+        if (updateRoundCoroutine != null)
+        {
+            StopCoroutine(updateRoundCoroutine);
+        }
+    }
+
     private bool TryStartNewRound()
     {
         StopRound();
 
         if (rounds.Count < 1)
         {
+            isPlaying = false;
             OnRoundsFinish.Execute();
 
             return false;
@@ -117,6 +114,20 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
         currentRound = rounds.Dequeue();
         OnBlockDataSet.Execute(roundsBlockData[currentRound]);
         Subscribe();
+    }
+
+    private void ClearTetrominos()
+    {
+        if (currentTetromino.Value != null)
+        {
+            currentTetromino.Value.Destroy();
+            currentTetromino.Value = null;
+        }
+        if (nextTetromino.Value != null)
+        {
+            nextTetromino.Value.Destroy();
+            nextTetromino.Value = null;
+        }
     }
 
     private IEnumerator UpdateRound()

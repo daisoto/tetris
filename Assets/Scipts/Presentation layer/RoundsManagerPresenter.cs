@@ -14,23 +14,32 @@ public class RoundsManagerPresenter : ConstructableBehaviour<RoundsManager>
 
     protected override void Subscribe()
     {
-        disposablesContainer.Add(model.nextTetromino.Subscribe(nextTetromino =>
-        {
-            if (nextTetromino != null)
-            {
-                DrawNextTetromino(nextTetromino.shape);
-            }
+        //disposablesContainer.Add(model.nextTetromino.Subscribe(nextTetromino =>
+        //{
+        //    if (nextTetromino != null)
+        //    {
+        //        DrawNextTetromino(nextTetromino);
+        //    }
 
-            roundEndObject.SetActive(nextTetromino == null);
-        }));
+        //    roundEndObject.SetActive(nextTetromino == null);
+        //}));
 
-        disposablesContainer.Add(model.roundNumber.Subscribe(roundNumber =>
-        {
-            this.roundNumber.text = roundNumber.ToString();
-        }));
+        //disposablesContainer.Add(model.roundNumber.Subscribe(roundNumber =>
+        //{
+        //    this.roundNumber.text = roundNumber.ToString();
+        //}));
     }
 
-    private void DrawNextTetromino(bool[,] shape)
-    { 
+    private void DrawNextTetromino(Tetromino nextTetromino)
+    {
+        Color color = nextTetromino.blocks[0].color.Value;
+        Sprite sprite = nextTetromino.blocks[0].sprite.Value;
+
+        bool[,] shape = nextTetromino.shape;
+        Vector2Int shapeSize = new Vector2Int(shape.GetLength(0), shape.GetLength(1));
+
+        Vector2 blockSize = rectTransform.sizeDelta / (shapeSize + Vector2Int.one);
+
+
     }
 }

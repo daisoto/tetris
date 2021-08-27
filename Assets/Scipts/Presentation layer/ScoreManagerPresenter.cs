@@ -10,14 +10,14 @@ public class ScoreManagerPresenter : ConstructableBehaviour<ScoreManager>
 
     protected override void Subscribe()
     {
-        disposablesContainer.Add(model.score.Subscribe(score =>
-        {
-            scoreText.text = score.ToString();
-        }));
+        //disposablesContainer.Add(model.score.Subscribe(score =>
+        //{
+        //    scoreText.text = score.ToString();
+        //}));
 
-        disposablesContainer.Add(model.lineNum.Subscribe(lineNum =>
-        {
-            linesText.text = lineNum.ToString();
-        }));
+        //disposablesContainer.Add(model.lineNum.Subscribe(lineNum =>
+        //{
+        //    linesText.text = lineNum.ToString();
+        //}));
     }
 }
