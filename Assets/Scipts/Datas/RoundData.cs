@@ -11,7 +11,7 @@ public class RoundData: ScriptableObject
 
     [SerializeField] private BlockData _blockData;
 
-    [SerializeField, Range(5, 100)] private int _tetrominosInRound = 5;
+    [SerializeField, Range(5, 100)] private int _tetrominosInRound = 50;
 
-    [SerializeField, Range(0.1f, 1f)] private float _fallPeriod = 0.1f;
+    [SerializeField, Range(0.1f, 1f)] private float _fallPeriod = 0.5f;
 }

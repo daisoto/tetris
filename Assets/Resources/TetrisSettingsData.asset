@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _roundDatas:
   - {fileID: 11400000, guid: 355d74d979ca17242a529556e341775d, type: 2}
+  - {fileID: 11400000, guid: 341c61396025d874fa0472b50d754840, type: 2}
+  - {fileID: 11400000, guid: 95ac422012d6edf4bb1d87a01ac2c8af, type: 2}
   _tetrominoDatas:
   - {fileID: 11400000, guid: 60730081fbdebcb4f81b2b2b42820822, type: 2}
   - {fileID: 11400000, guid: 65a09847808ee694396184b14c42abfd, type: 2}

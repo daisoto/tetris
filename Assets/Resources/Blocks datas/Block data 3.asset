@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 628dbc2be28217b49826dee1d83e5b80, type: 3}
-  m_Name: Round 2
+  m_Script: {fileID: 11500000, guid: 8387db58dd641c546bab0d7112777d7d, type: 3}
+  m_Name: Block data 3
   m_EditorClassIdentifier: 
-  _blockData: {fileID: 11400000, guid: 8277c265b1b6fe141aac759295548e48, type: 2}
-  _tetrominosInRound: 7
-  _fallPeriod: 0.4
+  _sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  _color: {r: 0.61960787, g: 0.5254902, b: 0.78431374, a: 1}

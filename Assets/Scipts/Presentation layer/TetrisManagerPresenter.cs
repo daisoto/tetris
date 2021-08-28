@@ -64,26 +64,17 @@ public class TetrisManagerPresenter : ConstructableBehaviour<TetrisManager>
     {
         disposablesContainer.Add(model.OnGameOver.Subscribe(_ =>
         {
-            continueDelimeter.SetActive(false);
-            continueButton.gameObject.SetActive(false);
-
-            OpenMenu();
+            SetPause(false);
         }));
 
         disposablesContainer.Add(model.OnRoundsFinish.Subscribe(_ =>
         {
-            continueDelimeter.SetActive(false);
-            continueButton.gameObject.SetActive(false);
-
-            OpenMenu();
+            SetPause(false);
         }));
 
         disposablesContainer.Add(model.OnPause.Subscribe(_ =>
         {
-            continueDelimeter.SetActive(true);
-            continueButton.gameObject.SetActive(true);
-
-            OpenMenu();
+            SetPause(true);
         }));
 
         startButton.onClick.AddListener(model.StartGame);
@@ -93,7 +84,7 @@ public class TetrisManagerPresenter : ConstructableBehaviour<TetrisManager>
         continueButton.onClick.AddListener(CloseMenu);
 
         pauseButton.onClick.AddListener(model.PauseGame);
-        pauseButton.onClick.AddListener(OpenMenu);
+        pauseButton.onClick.AddListener(() => SetPause(true));
 
         exitButton.onClick.AddListener(model.Exit);
     }
@@ -107,6 +98,14 @@ public class TetrisManagerPresenter : ConstructableBehaviour<TetrisManager>
         continueButton.onClick.RemoveAllListeners();
 
         pauseButton.onClick.RemoveAllListeners();
+    }
+
+    private void SetPause(bool isContinuePossible)
+    {
+        continueDelimeter.SetActive(isContinuePossible);
+        continueButton.gameObject.SetActive(isContinuePossible);
+
+        OpenMenu();
     }
 
     private void CloseMenu()
@@ -139,9 +138,6 @@ public class TetrisManagerPresenter : ConstructableBehaviour<TetrisManager>
         {
             pauseButton.gameObject.SetActive(false);
         });
-
-        continueDelimeter.SetActive(true);
-        continueButton.gameObject.SetActive(true);
 
         menuGroup.gameObject.SetActive(true);
         menuGroup.DOFade(1, fadeDuration).OnComplete(() => { isMenuOpened = true; });

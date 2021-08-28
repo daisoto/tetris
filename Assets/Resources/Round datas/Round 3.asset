@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 628dbc2be28217b49826dee1d83e5b80, type: 3}
-  m_Name: Round 2
+  m_Name: Round 3
   m_EditorClassIdentifier: 
-  _blockData: {fileID: 11400000, guid: 8277c265b1b6fe141aac759295548e48, type: 2}
-  _tetrominosInRound: 7
-  _fallPeriod: 0.4
+  _blockData: {fileID: 11400000, guid: e370bcfd11320fa4288f9d8c5679d8ad, type: 2}
+  _tetrominosInRound: 10
+  _fallPeriod: 0.3
