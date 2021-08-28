@@ -41,6 +41,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Pausing"",
+                    ""type"": ""Button"",
+                    ""id"": ""5fb3f8fa-72a4-4138-9c78-c8a7c61aa420"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -175,6 +183,17 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""Approaching"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0875c5e1-44a9-4b3b-a109-cba737b10452"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardAndMouse"",
+                    ""action"": ""Pausing"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -203,6 +222,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_KeyboardAndMouse_Movement = m_KeyboardAndMouse.FindAction("Movement", throwIfNotFound: true);
         m_KeyboardAndMouse_Rotation = m_KeyboardAndMouse.FindAction("Rotation", throwIfNotFound: true);
         m_KeyboardAndMouse_Approaching = m_KeyboardAndMouse.FindAction("Approaching", throwIfNotFound: true);
+        m_KeyboardAndMouse_Pausing = m_KeyboardAndMouse.FindAction("Pausing", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -255,6 +275,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_KeyboardAndMouse_Movement;
     private readonly InputAction m_KeyboardAndMouse_Rotation;
     private readonly InputAction m_KeyboardAndMouse_Approaching;
+    private readonly InputAction m_KeyboardAndMouse_Pausing;
     public struct KeyboardAndMouseActions
     {
         private @PlayerControls m_Wrapper;
@@ -262,6 +283,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @Movement => m_Wrapper.m_KeyboardAndMouse_Movement;
         public InputAction @Rotation => m_Wrapper.m_KeyboardAndMouse_Rotation;
         public InputAction @Approaching => m_Wrapper.m_KeyboardAndMouse_Approaching;
+        public InputAction @Pausing => m_Wrapper.m_KeyboardAndMouse_Pausing;
         public InputActionMap Get() { return m_Wrapper.m_KeyboardAndMouse; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -280,6 +302,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Approaching.started -= m_Wrapper.m_KeyboardAndMouseActionsCallbackInterface.OnApproaching;
                 @Approaching.performed -= m_Wrapper.m_KeyboardAndMouseActionsCallbackInterface.OnApproaching;
                 @Approaching.canceled -= m_Wrapper.m_KeyboardAndMouseActionsCallbackInterface.OnApproaching;
+                @Pausing.started -= m_Wrapper.m_KeyboardAndMouseActionsCallbackInterface.OnPausing;
+                @Pausing.performed -= m_Wrapper.m_KeyboardAndMouseActionsCallbackInterface.OnPausing;
+                @Pausing.canceled -= m_Wrapper.m_KeyboardAndMouseActionsCallbackInterface.OnPausing;
             }
             m_Wrapper.m_KeyboardAndMouseActionsCallbackInterface = instance;
             if (instance != null)
@@ -293,6 +318,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Approaching.started += instance.OnApproaching;
                 @Approaching.performed += instance.OnApproaching;
                 @Approaching.canceled += instance.OnApproaching;
+                @Pausing.started += instance.OnPausing;
+                @Pausing.performed += instance.OnPausing;
+                @Pausing.canceled += instance.OnPausing;
             }
         }
     }
@@ -311,5 +339,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnRotation(InputAction.CallbackContext context);
         void OnApproaching(InputAction.CallbackContext context);
+        void OnPausing(InputAction.CallbackContext context);
     }
 }

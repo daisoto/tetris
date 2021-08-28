@@ -54,7 +54,8 @@ public class RoundsManagerPresenter : ConstructableBehaviour<RoundsManager>
         Sprite sprite = nextTetromino.blocks[0].sprite.Value;
 
         bool[,] shape = nextTetromino.shape;
-        Vector2Int shapeSize = new Vector2Int(shape.GetLength(0), shape.GetLength(1));
+
+        Vector2Int shapeSize = new Vector2Int(shape.GetLength(1), shape.GetLength(0));
 
         Vector2 blockSize = drawNextTetrominoContainer.rect.size / (shapeSize + Vector2Int.one);
 
@@ -71,7 +72,7 @@ public class RoundsManagerPresenter : ConstructableBehaviour<RoundsManager>
         {
             for (int j = 0; j < shapeSize.y; j++)
             {
-                if (shape[i, j])
+                if (shape[j, i])
                 {
                     Image blockImage = Instantiate(drawBlockPrefab, drawNextTetrominoContainer);
                     drawnBlocksObjects.Add(blockImage.gameObject);
@@ -80,19 +81,17 @@ public class RoundsManagerPresenter : ConstructableBehaviour<RoundsManager>
                     blockImage.sprite = sprite;
                     blockImage.rectTransform.sizeDelta = blockSize;
 
-                    blockImage.transform.localPosition = GetBlockPosition(blockSize, new Vector2Int(j, i), new Vector2(shapeSize.y, shapeSize.x));
+                    blockImage.transform.localPosition = GetBlockPosition(blockSize, new Vector2Int(i, j), shapeSize);
                 }
             }
         }
     }
 
-    private Vector2 GetBlockPosition(Vector2 blockSize, Vector2Int gridPos, Vector2 drawnTetrominoSize)
+    private Vector2 GetBlockPosition(Vector2 blockSize, Vector2Int pos, Vector2 drawnTetrominoSize)
     {
         Vector2 freeSpace = drawNextTetrominoContainer.rect.size - drawnTetrominoSize * blockSize;
 
-        Vector2 newPosition = blockSize * gridPos + freeSpace / 2;
-
-        return newPosition;
+        return blockSize * pos + freeSpace / 2;
     }
 
     private void ClearDrawnBlocksObjects()

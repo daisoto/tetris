@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraMover : MonoBehaviour
 {
-    [SerializeField] InputManager inputManager = null;
+    [SerializeField] InputManagerBehaviour inputManager = null;
 
     [SerializeField] Transform cameraTransform = null;
 
@@ -15,7 +15,7 @@ public class CameraMover : MonoBehaviour
 
     private void OnEnable()
     {
-        subscription = inputManager.onScroll.Subscribe(scrollValue =>
+        subscription = inputManager.OnScroll.Subscribe(scrollValue =>
         {
             float distance = Mathf.Clamp(scrollValue + cameraTransform.transform.localPosition.z, minDistance, maxDistance);
             cameraTransform.localPosition = new Vector3(cameraTransform.localPosition.x, cameraTransform.localPosition.y, distance);

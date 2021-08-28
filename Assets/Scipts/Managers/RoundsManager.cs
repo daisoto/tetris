@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
@@ -26,25 +27,28 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
 
     private IEnumerator updateRoundCoroutine = null;
 
+    private IFactory<Tetromino> tetrominoFactory = null;
+
     public void Construct(RoundData[] roundDatas, IFactory<Tetromino> tetrominoFactory)
     {
-        foreach (RoundData roundData in roundDatas)
-        {
-            Round round = new Round(roundData, tetrominoFactory);
-            rounds.Enqueue(round);
-            roundsBlockData.Add(round, roundData.blockData);
-        }
+        model = roundDatas;
+
+        this.tetrominoFactory = tetrominoFactory;
 
         isConstructed = true;
     }
 
     public bool TryStart()
     {
+        ResetRoundBlocksData();
+        ClearTetrominos();
+
         if (disposablesContainer.size < 1)
         {
             Subscribe();
         }
 
+        roundNumber.Value = 0;
         isPlaying = true;
 
         return TryStartNewRound();
@@ -53,10 +57,24 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
     public void Stop()
     {
         isPlaying = false;
+        currentRound = null;
 
-        ClearTetrominos();
-        StopRound();
+        Pause();
         Unsubscribe();
+    }
+
+    public void Pause()
+    {
+        if (updateRoundCoroutine != null)
+        {
+            StopCoroutine(updateRoundCoroutine);
+        }
+    }
+
+    public void Continue()
+    {
+        updateRoundCoroutine = UpdateRound();
+        StartCoroutine(updateRoundCoroutine);
     }
 
     protected override void Subscribe()
@@ -78,17 +96,22 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
         }));
     }
 
-    private void StopRound()
+    private void ResetRoundBlocksData()
     {
-        if (updateRoundCoroutine != null)
+        rounds.Clear();
+        roundsBlockData.Clear();
+
+        foreach (RoundData roundData in model)
         {
-            StopCoroutine(updateRoundCoroutine);
+            Round round = new Round(roundData, tetrominoFactory);
+            rounds.Enqueue(round);
+            roundsBlockData.Add(round, roundData.blockData);
         }
     }
 
     private bool TryStartNewRound()
     {
-        StopRound();
+        Pause();
 
         if (rounds.Count < 1)
         {
@@ -111,8 +134,8 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
         SetNewRound();
         currentRound.StartRound();
         roundNumber.Value++;
-        updateRoundCoroutine = UpdateRound();
-        StartCoroutine(updateRoundCoroutine);
+
+        Continue();
     }
 
     private void SetNewRound()
@@ -140,9 +163,9 @@ public class RoundsManager : ConstructableBehaviour<RoundData[]>
     {
         while (currentRound != null)
         {
-            currentRound.Tick();
-
             yield return new WaitForSeconds(currentFallPeriod);
+
+            currentRound.Tick();
         }
     }
 }

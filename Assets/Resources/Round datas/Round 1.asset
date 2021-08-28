@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Round 1
   m_EditorClassIdentifier: 
   _blockData: {fileID: 11400000, guid: 4a402b330eb6b0644ad9ed3b2f3a53dd, type: 2}
-  _tetrominosInRound: 5
+  _tetrominosInRound: 7
   _fallPeriod: 0.5

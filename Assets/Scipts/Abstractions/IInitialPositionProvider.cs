@@ -2,5 +2,5 @@
 
 public interface IInitialPositionProvider
 {
-    Vector2Int GetInitialPosition(Vector2Int gridSize);
+    Vector2Int GetInitialPosition(Vector2Int shapeSize);
 }

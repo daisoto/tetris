@@ -5,7 +5,7 @@ using System.Linq;
 
 public class TetrisGrid
 {
-    public ReactiveCommand onGameOver = new ReactiveCommand();
+    public ReactiveCommand OnGameOver = new ReactiveCommand();
 
     public ReactiveCommand<int> OnBlocksClear = new ReactiveCommand<int>();
 
@@ -111,7 +111,7 @@ public class TetrisGrid
             {
                 block.isAlive.Value = false;
 
-                onGameOver.Execute();
+                OnGameOver.Execute();
 
                 return;
             }

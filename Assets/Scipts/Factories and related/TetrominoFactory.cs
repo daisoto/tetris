@@ -5,16 +5,16 @@ public class TetrominoFactory : IFactory<Tetromino>
 {
     private TetrominoData[] tetrominoDatas = null;
 
-    private Vector2Int initialPosition = default;
-
     private IPool<Block> blocksPool = null;
+
+    private IInitialPositionProvider initialPositionProvider = null;
 
     public TetrominoFactory(Vector2Int gridSize, IPool<Block> blocksPool, TetrominoData[] tetrominoDatas)
     {
         this.tetrominoDatas = tetrominoDatas;
         this.blocksPool = blocksPool;
 
-        initialPosition = new CeilInitialPositionProvider().GetInitialPosition(gridSize);
+        initialPositionProvider = new CeilInitialPositionProvider(gridSize);
     }
 
     public Tetromino Create()
@@ -37,11 +37,9 @@ public class TetrominoFactory : IFactory<Tetromino>
 
     private void SetBlocksPosition(TetrominoData tetrominoData, Block[] blocks)
     {
-        //int xCenter = Misc.GetBankRounded(tetrominoData.size.x / 2f);
-
-        //Vector2Int axis = initialPosition + new Vector2Int(xCenter, 0);
-
         int blockIndex = 0;
+
+        Vector2Int initialPosition = initialPositionProvider.GetInitialPosition(tetrominoData.size);
 
         for (int i = 0; i < tetrominoData.size.x; i++)
         {

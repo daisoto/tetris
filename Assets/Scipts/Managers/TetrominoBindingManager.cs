@@ -5,7 +5,7 @@ public class TetrominoBindingManager : ConstructableBehaviour<TetrisGrid>
 {
     [SerializeField] private RoundsManager roundsManager = null;
 
-    [SerializeField] private InputManager inputManager = null;
+    [SerializeField] private InputManagerBehaviour inputManager = null;
 
     private DisposablesContainer inputDisposablesContainer = new DisposablesContainer();
 
@@ -19,9 +19,8 @@ public class TetrominoBindingManager : ConstructableBehaviour<TetrisGrid>
             roundsManager?.Stop();
         })); 
         
-        disposablesContainer.Add(model.onGameOver.Subscribe(_ =>
+        disposablesContainer.Add(model.OnGameOver.Subscribe(_ =>
         {
-            roundsManager?.Stop();
             roundsManager?.Stop();
             inputDisposablesContainer?.Clear();
         }));
@@ -38,27 +37,27 @@ public class TetrominoBindingManager : ConstructableBehaviour<TetrisGrid>
         {
             tetrominoGridDisposablesContainer.Clear();
 
-            tetrominoGridDisposablesContainer.Add(tetromino?.onTick.Subscribe(_ =>
+            tetrominoGridDisposablesContainer.Add(tetromino?.OnTick.Subscribe(_ =>
             {
                 model?.MoveDefault(tetromino);
             }));
 
-            tetrominoGridDisposablesContainer.Add(tetromino?.onMoveLeft.Subscribe(_ =>
+            tetrominoGridDisposablesContainer.Add(tetromino?.OnMoveLeft.Subscribe(_ =>
             {
                 model?.MoveLeft(tetromino);
             }));
 
-            tetrominoGridDisposablesContainer.Add(tetromino?.onMoveRight.Subscribe(_ =>
+            tetrominoGridDisposablesContainer.Add(tetromino?.OnMoveRight.Subscribe(_ =>
             {
                 model?.MoveRight(tetromino);
             }));
 
-            tetrominoGridDisposablesContainer.Add(tetromino?.onMoveDown.Subscribe(_ =>
+            tetrominoGridDisposablesContainer.Add(tetromino?.OnMoveDown.Subscribe(_ =>
             {
                 model?.MoveDown(tetromino);
             }));
 
-            tetrominoGridDisposablesContainer.Add(tetromino?.onRotate.Subscribe(_ =>
+            tetrominoGridDisposablesContainer.Add(tetromino?.OnRotate.Subscribe(_ =>
             {
                 model?.Rotate(tetromino);
             }));
@@ -71,22 +70,22 @@ public class TetrominoBindingManager : ConstructableBehaviour<TetrisGrid>
         {
             inputDisposablesContainer.Clear();
 
-            inputDisposablesContainer.Add(inputManager.onDownPress.Subscribe(_ =>
+            inputDisposablesContainer.Add(inputManager.OnDownPress.Subscribe(_ =>
             {
                 tetromino?.MoveDown();
             }));
 
-            inputDisposablesContainer.Add(inputManager.onLeftPress.Subscribe(_ =>
+            inputDisposablesContainer.Add(inputManager.OnLeftPress.Subscribe(_ =>
             {
                 tetromino?.MoveLeft();
             }));
 
-            inputDisposablesContainer.Add(inputManager.onRightPress.Subscribe(_ =>
+            inputDisposablesContainer.Add(inputManager.OnRightPress.Subscribe(_ =>
             {
                 tetromino?.MoveRight();
             }));
 
-            inputDisposablesContainer.Add(inputManager.onRotatePress.Subscribe(_ =>
+            inputDisposablesContainer.Add(inputManager.OnRotatePress.Subscribe(_ =>
             {
                 tetromino?.Rotate();
             }));

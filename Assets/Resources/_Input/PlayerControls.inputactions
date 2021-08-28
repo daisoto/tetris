@@ -28,6 +28,14 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Pausing",
+                    "type": "Button",
+                    "id": "5fb3f8fa-72a4-4138-9c78-c8a7c61aa420",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -160,6 +168,17 @@
                     "processors": "Normalize(min=-1,max=1)",
                     "groups": "KeyboardAndMouse",
                     "action": "Approaching",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0875c5e1-44a9-4b3b-a109-cba737b10452",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardAndMouse",
+                    "action": "Pausing",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
