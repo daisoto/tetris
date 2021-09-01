@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 [Serializable]
@@ -20,6 +20,23 @@ public class SerializableRectangularArray<T>
     public static implicit operator SerializableRectangularArray<T>(T[,] rawArray)
     {
         return new SerializableRectangularArray<T>(rawArray);
+    }
+    
+    public static implicit operator T[][](SerializableRectangularArray<T> serializableRectangularArray)
+    {
+        T[][] value = new T[serializableRectangularArray.size.x][];
+
+        for (int i = 0; i < serializableRectangularArray.size.x; i++)
+        {
+            value[i] = new T[serializableRectangularArray.size.y];
+            
+            for (int j = 0; j < serializableRectangularArray.size.y; j++)
+            {
+                value[i][j] = serializableRectangularArray[i, j];
+            }
+        }
+
+        return value;
     }
 
     public static implicit operator T[,](SerializableRectangularArray<T> serializableRectangularArray)
